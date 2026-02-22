@@ -21,9 +21,12 @@ def list_tasks(tasks):
     if not tasks:
         print("Aucune tâche.")
         return
-    for i, t in enumerate(tasks, start=1):
+
+    ordered = sorted(tasks, key=lambda t: (t.get("done", False), t.get("title", "")))
+    for i, t in enumerate(ordered, start=1):
         mark = "✅" if t.get("done") else "⬜️"
         print(f"{i}. {mark} {t.get('title','')}")
+        
 
 
 def ask_index(tasks, prompt):
@@ -115,3 +118,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+    
+
