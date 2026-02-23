@@ -20,7 +20,7 @@ BACKUP_DIR = Path("backups")
 def backup_tasks_file():
     if DATA_FILE.exists():
         BACKUP_DIR.mkdir(exist_ok=True)
-        stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
         shutil.copy2(DATA_FILE, BACKUP_DIR / f"tasks-{stamp}.json")
         prune_backups(30)
         
