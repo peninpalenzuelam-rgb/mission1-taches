@@ -1,0 +1,78 @@
+from flask import Flask, render_template, request, redirect, url_for
+import json
+from pathlib import Path
+
+app = Flask(__name__)
+DATA_FILE = Path("tasks.json")
+
+
+def load_tasks():
+    if not DATA_FILE.exists():
+        return []
+    return json.loads(DATA_FILE.read_text(encoding="utf-8"))
+
+
+def save_tasks(tasks):
+    DATA_FILE.write_text(json.dumps(tasks, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def ordered_items(tasks):
+    return sorted(
+        list(enumerate(tasks)),
+        key=lambda it: (it[1].get("done", False), it[1].get("pos", 10**9)),
+    )
+
+
+@app.get("/")
+def index():
+    tasks = load_tasks()
+    items = ordered_items(tasks)
+    return render_template("index.html", items=items)
+
+
+@app.post("/add")
+def add():
+    title = request.form.get("title", "").strip()
+    if title:
+        tasks = load_tasks()
+        max_pos = max((t.get("pos", 0) for t in tasks), default=0)
+        tasks.append({"title": title, "done": False, "pos": max_pos + 10})
+        save_tasks(tasks)
+    return redirect(url_for("index"))
+
+@app.post("/toggle/<int:display_id>")
+def toggle(display_id):
+    tasks = load_tasks()
+    items = ordered_items(tasks)
+    if 1 <= display_id <= len(items):
+        real_i, _ = items[display_id - 1]
+        tasks[real_i]["done"] = not bool(tasks[real_i].get("done"))
+        save_tasks(tasks)
+    return redirect(url_for("index"))
+
+
+@app.post("/delete/<int:display_id>")
+def delete(display_id):
+    tasks = load_tasks()
+    items = ordered_items(tasks)
+    if 1 <= display_id <= len(items):
+        real_i, _ = items[display_id - 1]
+        tasks.pop(real_i)
+        save_tasks(tasks)
+    return redirect(url_for("index"))
+
+
+@app.post("/edit/<int:display_id>")
+def edit(display_id):
+    new_title = request.form.get("title", "").strip()
+    tasks = load_tasks()
+    items = ordered_items(tasks)
+    if new_title and 1 <= display_id <= len(items):
+        real_i, _ = items[display_id - 1]
+        tasks[real_i]["title"] = new_title
+        save_tasks(tasks)
+    return redirect(url_for("index"))
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
