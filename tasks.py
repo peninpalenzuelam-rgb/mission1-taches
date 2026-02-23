@@ -79,7 +79,13 @@ def reset_all(tasks):
         t["done"] = False
     save_tasks(tasks)
     print("🔄 Tout est repassé à ⬜️.")
-
+def show_stats(task):
+    total = len(task)
+    done = sum(1 for t in task if t.get("done"))
+    todo = total - done 
+    print(f"Total: {total}")
+    print(f"Faites: {done}")
+    print(f"Á faire: {todo}")
 
 def main():
     tasks = load_tasks()
@@ -91,6 +97,7 @@ def main():
         print("C) (Dé)cocher")
         print("D) Supprimer")
         print("R) Reset (tout décocher)")
+        print("S) Stats")
         print("Q) Quitter")
 
         choice = input("> ").strip().lower()
@@ -109,6 +116,9 @@ def main():
         elif choice in ("r",):
             reset_all(tasks)
             tasks = load_tasks()
+        elif choice in ("s",):
+            show_stats(tasks)
+            tasks = load_tasks()
         elif choice in ("q", "4"):
             print("Bye.")
             break
@@ -118,6 +128,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-    
+      
 
