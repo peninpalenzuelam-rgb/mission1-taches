@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pathlib import Path
+import json
 import shutil
 from datetime import datetime
 
@@ -21,7 +22,14 @@ def backup_tasks_file():
         BACKUP_DIR.mkdir(exist_ok=True)
         stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         shutil.copy2(DATA_FILE, BACKUP_DIR / f"tasks-{stamp}.json")
-
+        prune_backups(30)
+        
+def prune_backups(keep=30):
+    if not BACKUP_DIR.exists():
+        return
+    files = sorted(BACKUP_DIR.glob("tasks-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    for f in files[keep:]:
+        f.unlink()
 
 def save_tasks(tasks):
     backup_tasks_file()
@@ -34,9 +42,7 @@ def save_tasks(tasks):
 def ordered_items(tasks):
     return sorted(
         list(enumerate(tasks)),
-        key=lambda it: (it[1].get("done", False), it[1].get("pos", 10**9)),
-    )
-
+        key=lambda it: (it[1].get("done", False), it[1].get("pos", 10**9)))
 
 @app.get("/")
 def index():
