@@ -28,11 +28,14 @@ def index():
     q = (request.args.get("q") or "").strip().lower()
     tasks = load_tasks()
     items = ordered_items(tasks)
+    total = len(tasks)
+    done = sum(1 for t in tasks if t.get("done"))
+    todo = total - done
 
     if q:
         items = [(i, t) for (i, t) in items if q in (t.get("title", "").lower())]
-
-    return render_template("index.html", items=items, q=q)
+    
+    return render_template("index.html", items=items, q=q, total=total, done=done, todo=todo)
 
 
 @app.post("/add")
