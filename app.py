@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
-import json
 from pathlib import Path
+import shutil
+from datetime import datetime
 
 app = Flask(__name__)
 DATA_FILE = Path("tasks.json")
@@ -12,8 +13,22 @@ def load_tasks():
     return json.loads(DATA_FILE.read_text(encoding="utf-8"))
 
 
+BACKUP_DIR = Path("backups")
+
+
+def backup_tasks_file():
+    if DATA_FILE.exists():
+        BACKUP_DIR.mkdir(exist_ok=True)
+        stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        shutil.copy2(DATA_FILE, BACKUP_DIR / f"tasks-{stamp}.json")
+
+
 def save_tasks(tasks):
-    DATA_FILE.write_text(json.dumps(tasks, ensure_ascii=False, indent=2), encoding="utf-8")
+    backup_tasks_file()
+    DATA_FILE.write_text(
+        json.dumps(tasks, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
 
 
 def ordered_items(tasks):
