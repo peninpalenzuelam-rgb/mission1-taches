@@ -79,6 +79,8 @@ def reset_all(tasks):
         t["done"] = False
     save_tasks(tasks)
     print("🔄 Tout est repassé à ⬜️.")
+
+
 def show_stats(task):
     total = len(task)
     done = sum(1 for t in task if t.get("done"))
@@ -87,6 +89,27 @@ def show_stats(task):
     print(f"Faites: {done}")
     print(f"Á faire: {todo}")
 
+
+def edit_task(tasks):
+    list_tasks(tasks)
+    if not tasks:
+        return
+    raw = input("Numero de la tâche á éditer : ")
+    if not raw.isdigit():
+        print("❌ Entrez un numéro.")
+        return
+    idx = int(raw) - 1
+    if idx < 0 or idx >= len(tasks):
+        print("❌ numéro invalide.")
+        return
+    new_title = input("nouveau titre : ").strip()
+    if not new_title:
+        print("❌ titre vide, annulé.")
+        return
+    tasks[idx]["title"] = new_title
+    save_tasks(tasks)
+    print("✅ Tâche modifiée.")
+    
 def main():
     tasks = load_tasks()
 
@@ -98,6 +121,7 @@ def main():
         print("D) Supprimer")
         print("R) Reset (tout décocher)")
         print("S) Stats")
+        print("E) Éditer")
         print("Q) Quitter")
 
         choice = input("> ").strip().lower()
@@ -119,6 +143,9 @@ def main():
         elif choice in ("s",):
             show_stats(tasks)
             tasks = load_tasks()
+        elif choice in ("e,"):
+            edit_task(tasks)
+            tasks = load_tasks()
         elif choice in ("q", "4"):
             print("Bye.")
             break
@@ -129,4 +156,4 @@ def main():
 if __name__ == "__main__":
     main()
       
-
+      
