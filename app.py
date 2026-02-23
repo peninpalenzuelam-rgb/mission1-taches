@@ -7,6 +7,13 @@ from datetime import datetime
 app = Flask(__name__)
 DATA_FILE = Path("tasks.json")
 
+CONFIG_FILE = Path("config.json")
+
+DEFAULT_CONFIG = {
+    "keep_backups": 30,
+    "port": 5001,
+}
+
 
 def load_tasks():
     if not DATA_FILE.exists():
@@ -15,6 +22,23 @@ def load_tasks():
 
 
 BACKUP_DIR = Path("backups")
+CONFIG_FILE = Path("config.json")
+
+DEFAULT_CONFIG = {
+    "keep_backups": 30,
+    "port": 5001,
+}
+
+def save_config(cfg):
+    CONFIG_FILE.write_text(json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def prune_backups(keep=30):
+    if not BACKUP_DIR.exists():
+        return
+    files = sorted(BACKUP_DIR.glob("tasks-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    for f in files[keep:]:
+        f.unlink()
 
 
 def backup_tasks_file():
@@ -22,14 +46,9 @@ def backup_tasks_file():
         BACKUP_DIR.mkdir(exist_ok=True)
         stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
         shutil.copy2(DATA_FILE, BACKUP_DIR / f"tasks-{stamp}.json")
-        prune_backups(30)
-        
-def prune_backups(keep=30):
-    if not BACKUP_DIR.exists():
-        return
-    files = sorted(BACKUP_DIR.glob("tasks-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-    for f in files[keep:]:
-        f.unlink()
+
+        cfg = load_config()
+        prune_backups(int(cfg.get("keep_backups", 30)))
 
 def save_tasks(tasks):
     backup_tasks_file()
@@ -222,5 +241,30 @@ def restore_backup(name):
 
     return redirect(url_for("index"))
 
+@app.get("/settings")
+def settings():
+    cfg = load_config()
+    return render_template("settings.html", cfg=cfg)
+
+
+@app.post("/settings")
+def settings_save():
+    cfg = load_config()
+
+    keep_raw = (request.form.get("keep_backups") or "").strip()
+    port_raw = (request.form.get("port") or "").strip()
+
+    # validations simples
+    if keep_raw.isdigit():
+        keep = int(keep_raw)
+        cfg["keep_backups"] = max(1, min(keep, 500))  # limite raisonnable
+    if port_raw.isdigit():
+        port = int(port_raw)
+        cfg["port"] = max(1024, min(port, 65535))
+
+    save_config(cfg)
+    return redirect(url_for("settings"))
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=False)
+    cfg = load_config()
+    app.run(host="0.0.0.0", port=int(cfg.get("port", 5001)), debug=False)
