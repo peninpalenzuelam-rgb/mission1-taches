@@ -91,7 +91,7 @@ def main():
     tasks = load_tasks()
 
     while True:
-        print("\n--- TASKS ---")
+        print("\n--- TASKS v1 ---")
         print("A) Ajouter")
         print("L) Lister")
         print("C) (Dé)cocher")
