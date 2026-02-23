@@ -55,21 +55,47 @@ def add_task(tasks):
 
 
 def toggle_done(tasks):
-    list_tasks(tasks)
-    idx = ask_index(tasks, "Numéro de la tâche à (dé)cocher : ")
-    if idx is None:
+    items = ordered_items(tasks)
+    if not items:
+        print("Aucune tâche.")
         return
-    tasks[idx]["done"] = not bool(tasks[idx].get("done"))
+
+    list_tasks(tasks)
+    raw = input("Numéro de la tâche à (dé)cocher : ").strip()
+    if not raw.isdigit():
+        print("❌ Entrez un numéro.")
+        return
+
+    display_idx = int(raw) - 1
+    if display_idx < 0 or display_idx >= len(items):
+        print("❌ Numéro invalide.")
+        return
+
+    real_i, _ = items[display_idx]
+    tasks[real_i]["done"] = not bool(tasks[real_i].get("done"))
     save_tasks(tasks)
     print("✅ Mise à jour.")
 
 
 def delete_task(tasks):
-    list_tasks(tasks)
-    idx = ask_index(tasks, "Numéro de la tâche à supprimer : ")
-    if idx is None:
+    items = ordered_items(tasks)
+    if not items:
+        print("Aucune tâche.")
         return
-    removed = tasks.pop(idx)
+
+    list_tasks(tasks)
+    raw = input("Numéro de la tâche à supprimer : ").strip()
+    if not raw.isdigit():
+        print("❌ Entrez un numéro.")
+        return
+
+    display_idx = int(raw) - 1
+    if display_idx < 0 or display_idx >= len(items):
+        print("❌ Numéro invalide.")
+        return
+
+    real_i, t = items[display_idx]   # <-- LE "MAPPING" est ici
+    removed = tasks.pop(real_i)
     save_tasks(tasks)
     print(f"🗑️ Supprimée : {removed.get('title','')}")
 
@@ -91,22 +117,30 @@ def show_stats(task):
 
 
 def edit_task(tasks):
-    list_tasks(tasks)
-    if not tasks:
+    items = ordered_items(tasks)
+    if not items:
+        print("Aucune tâche.")
         return
-    raw = input("Numero de la tâche á éditer : ")
+
+    list_tasks(tasks)
+    raw = input("Numéro de la tâche à éditer : ").strip()
     if not raw.isdigit():
         print("❌ Entrez un numéro.")
         return
-    idx = int(raw) - 1
-    if idx < 0 or idx >= len(tasks):
-        print("❌ numéro invalide.")
+
+    display_idx = int(raw) - 1
+    if display_idx < 0 or display_idx >= len(items):
+        print("❌ Numéro invalide.")
         return
-    new_title = input("nouveau titre : ").strip()
+
+    real_i, _ = items[display_idx]   # <-- MAPPING affichage -> vrai index
+
+    new_title = input("Nouveau titre : ").strip()
     if not new_title:
-        print("❌ titre vide, annulé.")
+        print("❌ Titre vide, annulé.")
         return
-    tasks[idx]["title"] = new_title
+
+    tasks[real_i]["title"] = new_title
     save_tasks(tasks)
     print("✅ Tâche modifiée.")
     
@@ -151,6 +185,21 @@ def main():
             break
         else:
             print("❌ Choix invalide.")
+def ordered_items(tasks):
+    # retourne une liste de tuples: (index_original, task)
+    return sorted(
+        list(enumerate(tasks)),
+        key=lambda it: (it[1].get("done", False), it[1].get("title", "")),
+    )
+
+def list_tasks(tasks):
+    items = ordered_items(tasks)
+    if not items:
+        print("Aucune tâche.")
+        return
+    for display_i, (real_i, t) in enumerate(items, start=1):
+        mark = "✅" if t.get("done") else "⬜️"
+        print(f"{display_i}. {mark} {t.get('title','')}")
 
 
 if __name__ == "__main__":
