@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, abort
 from pathlib import Path
 import json
 import shutil
@@ -180,6 +180,47 @@ def export_csv():
         mimetype="text/csv; charset=utf-8",
         headers={"Content-Disposition": "attachment; filename=tasks.csv"},
     )
+@app.get("/backups")
+def backups():
+    BACKUP_DIR.mkdir(exist_ok=True)
+    files = sorted(BACKUP_DIR.glob("tasks-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    items = []
+    for p in files:
+        st = p.stat()
+        items.append({
+            "name": p.name,
+            "mtime": st.st_mtime,
+            "size": st.st_size,
+        })
+    return render_template("backups.html", backups=items)
+
+
+def safe_backup_path(name: str) -> Path:
+    # Empêche les chemins du type ../../
+    if "/" in name or "\\" in name:
+        abort(400)
+    if not (name.startswith("tasks-") and name.endswith(".json")):
+        abort(400)
+
+    p = (BACKUP_DIR / name).resolve()
+    if p.parent != BACKUP_DIR.resolve():
+        abort(400)
+    if not p.exists():
+        abort(404)
+    return p
+
+
+@app.post("/restore/<path:name>")
+def restore_backup(name):
+    src = safe_backup_path(name)
+
+    # backup de l'état actuel avant d'écraser
+    backup_tasks_file()
+
+    # restaure
+    shutil.copy2(src, DATA_FILE)
+
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=False)

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Backups</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 24px; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    .btn { padding: 6px 10px; border: 1px solid #ddd; background: #fff; border-radius: 8px; cursor: pointer; text-decoration: none; color: inherit; }
+    .btn:hover { background: #f6f6f6; }
+    .row { display:flex; gap:10px; align-items:center; padding:10px 0; border-bottom:1px solid #eee; }
+    .name { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    .meta { color:#666; font-size: 12px; width: 160px; text-align:right; }
+    form { margin:0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Backups</h1>
+    <p><a class="btn" href="/">← Retour</a></p>
+
+    {% if backups|length == 0 %}
+      <p>Aucun backup.</p>
+    {% else %}
+      {% for b in backups %}
+        <div class="row">
+          <div class="name">{{ b.name }}</div>
+          <div class="meta">{{ (b.size / 1024) | round(1) }} KB</div>
+          <form method="post" action="/restore/{{ b.name }}">
+            <button class="btn" type="submit" onclick="return confirm('Restaurer ce backup ?')">Restaurer</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</body>
+</html>
