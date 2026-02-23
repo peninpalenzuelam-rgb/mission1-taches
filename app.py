@@ -25,9 +25,14 @@ def ordered_items(tasks):
 
 @app.get("/")
 def index():
+    q = (request.args.get("q") or "").strip().lower()
     tasks = load_tasks()
     items = ordered_items(tasks)
-    return render_template("index.html", items=items)
+
+    if q:
+        items = [(i, t) for (i, t) in items if q in (t.get("title", "").lower())]
+
+    return render_template("index.html", items=items, q=q)
 
 
 @app.post("/add")

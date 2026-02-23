@@ -24,7 +24,11 @@
   <div class="wrap">
     <h1>Tasks</h1>
       <p><a class="btn" href="/export.csv">⬇️ Export CSV</a></p>
-
+   <form class="add" method="get" action="/">
+     <input type="text" name="q" placeholder="Rechercher…" value="{{ q or '' }}" />
+     <button class="btn" type="submit">Rechercher</button>
+   </form>
+   
     <form class="add" method="post" action="/add">
       <input type="text" name="title" placeholder="Nouvelle tâche…" required />
       <button class="btn" type="submit">Ajouter</button>
