@@ -117,5 +117,27 @@ def move_down(display_id):
 
     return redirect(url_for("index"))
 
+from flask import Response
+import csv
+import io
+
+@app.get("/export.csv")
+def export_csv():
+    tasks = load_tasks()
+    items = ordered_items(tasks)
+
+    out = io.StringIO()
+    writer = csv.writer(out)
+    writer.writerow(["num", "title", "done", "pos"])
+
+    for display_id, (real_i, t) in enumerate(items, start=1):
+        writer.writerow([display_id, t.get("title", ""), t.get("done", False), t.get("pos", "")])
+
+    return Response(
+        out.getvalue(),
+        mimetype="text/csv; charset=utf-8",
+        headers={"Content-Disposition": "attachment; filename=tasks.csv"},
+    )
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
