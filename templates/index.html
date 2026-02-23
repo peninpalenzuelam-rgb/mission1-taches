@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tasks</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 24px; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 { margin: 0 0 16px; }
+    form { margin: 0; }
+    .row { display: flex; gap: 8px; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .num { width: 36px; color: #666; }
+    .title { flex: 1; }
+    .done { text-decoration: line-through; color: #777; }
+    .btn { padding: 6px 10px; border: 1px solid #ddd; background: #fff; border-radius: 8px; cursor: pointer; }
+    .btn:hover { background: #f6f6f6; }
+    .add { display: flex; gap: 8px; margin: 16px 0 8px; }
+    input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 10px; }
+    .small { width: 220px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Tasks</h1>
+
+    <form class="add" method="post" action="/add">
+      <input type="text" name="title" placeholder="Nouvelle tâche…" required />
+      <button class="btn" type="submit">Ajouter</button>
+    </form>
+
+    {% if items|length == 0 %}
+      <p>Aucune tâche.</p>
+    {% else %}
+      {% for idx, task in items %}
+        {% set display_id = loop.index %}
+        <div class="row">
+          <div class="num">{{ display_id }}.</div>
+
+          <form method="post" action="/toggle/{{ display_id }}">
+            <button class="btn" type="submit">{{ "✅" if task.done else "⬜️" }}</button>
+          </form>
+
+          <div class="title {{ 'done' if task.done else '' }}">{{ task.title }}</div>
+
+          <form method="post" action="/edit/{{ display_id }}">
+            <input class="small" type="text" name="title" placeholder="Éditer…" />
+            <button class="btn" type="submit">✏️</button>
+          </form>
+
+          <form method="post" action="/delete/{{ display_id }}" onsubmit="return confirm('Supprimer ?');">
+            <button class="btn" type="submit">🗑️</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</body>
+</html>
