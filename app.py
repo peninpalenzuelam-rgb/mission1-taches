@@ -73,6 +73,49 @@ def edit(display_id):
         save_tasks(tasks)
     return redirect(url_for("index"))
 
+@app.post("/up/<int:display_id>")
+def move_up(display_id):
+    tasks = load_tasks()
+    items = ordered_items(tasks)
+    todo = [(real_i, t) for (real_i, t) in items if not t.get("done", False)]
+
+    if 1 <= display_id <= len(items):
+        real_i, t = items[display_id - 1]
+        if t.get("done", False):
+            return redirect(url_for("index"))
+
+        pos_in_todo = next((k for k, (ri, _) in enumerate(todo) if ri == real_i), None)
+        if pos_in_todo is None or pos_in_todo == 0:
+            return redirect(url_for("index"))
+
+        prev_real_i, _ = todo[pos_in_todo - 1]
+        tasks[real_i]["pos"], tasks[prev_real_i]["pos"] = tasks[prev_real_i]["pos"], tasks[real_i]["pos"]
+        save_tasks(tasks)
+
+    return redirect(url_for("index"))
+
+
+@app.post("/down/<int:display_id>")
+def move_down(display_id):
+    tasks = load_tasks()
+    items = ordered_items(tasks)
+
+    todo = [(real_i, t) for (real_i, t) in items if not t.get("done", False)]
+
+    if 1 <= display_id <= len(items):
+        real_i, t = items[display_id - 1]
+        if t.get("done", False):
+            return redirect(url_for("index"))
+
+        pos_in_todo = next((k for k, (ri, _) in enumerate(todo) if ri == real_i), None)
+        if pos_in_todo is None or pos_in_todo == len(todo) - 1:
+            return redirect(url_for("index"))
+
+        next_real_i, _ = todo[pos_in_todo + 1]
+        tasks[real_i]["pos"], tasks[next_real_i]["pos"] = tasks[next_real_i]["pos"], tasks[real_i]["pos"]
+        save_tasks(tasks)
+
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug=True)
