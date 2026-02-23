@@ -26,16 +26,29 @@ def ordered_items(tasks):
 @app.get("/")
 def index():
     q = (request.args.get("q") or "").strip().lower()
+    
     tasks = load_tasks()
     items = ordered_items(tasks)
+    
     total = len(tasks)
     done = sum(1 for t in tasks if t.get("done"))
     todo = total - done
 
+    filtered_items = items
     if q:
-        items = [(i, t) for (i, t) in items if q in (t.get("title", "").lower())]
+       filtered_items = [(i, t) for (i, t) in items if q in (t.get("title", "").lower())] 
     
-    return render_template("index.html", items=items, q=q, total=total, done=done, todo=todo)
+    filtered_total = len(filtered_items)
+    filtered_done = sum(1 for _, t in filtered_items if t.get("done"))
+    filtered_todo = filtered_total - filtered_done
+    
+    return render_template(
+        "index.html",
+        items=filtered_items, 
+        q=q,
+        total=total, done=done, todo=todo,
+        filtered_total=filtered_total, filtered_done=filtered_done, filtered_todo=filtered_todo
+)
 
 
 @app.post("/add")
@@ -148,4 +161,4 @@ def export_csv():
     )
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5001, debug=False)
