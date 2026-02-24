@@ -6,7 +6,9 @@ import shutil
 from datetime import datetime
 
 app = Flask(__name__)
-print("✅ LOADED:", __file__)
+
+PLAN_FILE = Path("plan.json")
+
 DATA_FILE = Path("tasks.json")
 
 BACKUP_DIR = Path("backups")
@@ -90,13 +92,27 @@ def index():
     filtered_done = sum(1 for _, t in filtered_items if t.get("done"))
     filtered_todo = filtered_total - filtered_done
     
+    plan_progress = {"done": 0, "total": 0, "pct": 0}
+    try:
+        plan = load_plan()
+        total_actions = 0
+        done_actions = 0
+        for d in plan.get("days", []):
+            for it in d.get("items", []):
+                total_actions += 1
+                if it.get("done"):
+                    done_actions += 1
+        pct = int((done_actions / total_actions) * 100) if total_actions else 0
+        plan_progress = {"done": done_actions, "total": total_actions, "pct": pct}
+    except Exception:
+        pass
+
     return render_template(
         "index.html",
         items=filtered_items, 
         q=q,
         total=total, done=done, todo=todo,
-        filtered_total=filtered_total, filtered_done=filtered_done, filtered_todo=filtered_todo
-)
+        filtered_total=filtered_total, filtered_done=filtered_done, filtered_todo=filtered_todo, plan_progress=plan_progress)
 
 
 @app.post("/add")
@@ -330,6 +346,72 @@ def today_reset():
     save_today(data)
     return redirect(url_for("today_page"))
 
+PLAN_FILE = Path("plan.json")
+
+
+def load_plan():
+    if not PLAN_FILE.exists():
+        return {"sector": "coiffeur", "week": 1, "days": []}
+    return json.loads(PLAN_FILE.read_text(encoding="utf-8"))
+
+def save_plan(plan):
+    PLAN_FILE.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
+
+@app.get("/plan")
+def plan_page():
+    plan = load_plan()
+    return render_template("plan.html", plan=plan)
+
+@app.post("/plan/toggle/<item_id>")
+def plan_toggle(item_id):
+    plan = load_plan()
+    for d in plan.get("days", []):
+        for it in d.get("items", []):
+            if it.get("id") == item_id:
+                it["done"] = not bool(it.get("done"))
+                save_plan(plan)
+                return redirect(url_for("plan_page"))
+    return redirect(url_for("plan_page"))
+
+
+SUIVI_FILE = Path("suivi.json")
+
+def load_suivi():
+    if not SUIVI_FILE.exists():
+        return {"week": 1, "data": {"leads": 0, "bookings": 0, "noshow": 0, "revenue": 0, "reviews": 0}}
+    return json.loads(SUIVI_FILE.read_text(encoding="utf-8"))
+
+def save_suivi(suivi):
+    SUIVI_FILE.write_text(json.dumps(suivi, ensure_ascii=False, indent=2), encoding="utf-8")
+
+@app.get("/suivi")
+def suivi_page():
+    suivi = load_suivi()
+    data = suivi.get("data", {})
+    score = 0
+    if data.get("bookings", 0) >= 5: score += 1
+    if data.get("reviews", 0) >= 3: score += 1
+    if data.get("noshow", 0) <= 2: score += 1
+    return render_template("suivi.html", suivi=suivi, data=data, score=score)
+
+@app.post("/suivi/save")
+def suivi_save():
+    suivi = load_suivi()
+    d = suivi.get("data", {})
+
+    def to_int(name):
+        raw = (request.form.get(name) or "0").strip()
+        return int(raw) if raw.lstrip("-").isdigit() else 0
+
+    d["leads"] = max(0, to_int("leads"))
+    d["bookings"] = max(0, to_int("bookings"))
+    d["noshow"] = max(0, to_int("noshow"))
+    d["revenue"] = max(0, to_int("revenue"))
+    d["reviews"] = max(0, to_int("reviews"))
+
+    suivi["data"] = d
+    save_suivi(suivi)
+    return redirect(url_for("suivi_page"))
 
 if __name__ == "__main__":
     cfg = load_config()
