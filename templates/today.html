@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aujourd’hui</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 18px; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    .top { display:flex; justify-content: space-between; align-items:center; gap: 10px; flex-wrap: wrap; }
+    .btn { padding: 10px 12px; border: 1px solid #ddd; background: #fff; border-radius: 12px; cursor: pointer; text-decoration: none; color: inherit; display: inline-flex; align-items:center; gap: 8px; }
+    .btn:hover { background: #f6f6f6; }
+    .cards { display: grid; gap: 12px; margin-top: 12px; }
+    .card { border: 1px solid #eee; border-radius: 14px; padding: 12px; }
+    .row { display:flex; gap: 10px; align-items:center; }
+    .title { font-weight: 700; }
+    .meta { color:#666; font-size: 12px; margin-top: 4px; display:flex; gap: 8px; flex-wrap: wrap; }
+    .badge { border:1px solid #ddd; padding: 2px 8px; border-radius: 999px; background: #fff; }
+    .script { width: 100%; margin-top: 10px; padding: 10px; border: 1px solid #eee; border-radius: 12px; background:#fafafa; white-space: pre-wrap; }
+    .actions { display:flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .done { opacity: .65; }
+    .kpi { margin-top: 14px; border: 1px solid #eee; border-radius: 14px; padding: 12px; }
+    input { width: 120px; padding: 10px; border: 1px solid #ddd; border-radius: 12px; }
+    form { margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1 style="margin:0;">Aujourd’hui</h1>
+        <div style="color:#666; font-size:13px;">Jour {{ day_number }}/7</div>
+      </div>
+      <div class="actions">
+        <a class="btn" href="/">← Accueil</a>
+        <a class="btn" href="/plan">📅 Plan</a>
+        <a class="btn" href="/kpi">📈 KPI</a>
+      </div>
+    </div>
+
+    <div class="cards">
+      {% for a in actions %}
+        <div class="card {{ 'done' if a.done else '' }}">
+          <div class="row">
+            <form method="post" action="/today/action/{{ a.id }}">
+              <button class="btn" type="submit">{{ "✅" if a.done else "⬜️" }}</button>
+            </form>
+            <div style="flex:1;">
+              <div class="title">{{ a.title }}</div>
+              <div class="meta">
+                <span class="badge">⏱️ {{ a.duration_min }} min</span>
+                <span class="badge">🎯 {{ a.kpi_tag }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="script" id="script-{{ a.id }}">{{ a.script }}</div>
+
+          <div class="actions">
+            <button class="btn" type="button" onclick="copyText('script-{{ a.id }}')">📋 Copier script</button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="kpi">
+      <h2 style="margin:0 0 10px;">KPI (rapide)</h2>
+      <form method="post" action="/today/kpi" class="row" style="flex-wrap:wrap;">
+        <label>Leads<br><input name="leads" type="number" min="0" value="{{ kpi.leads }}"></label>
+        <label>RDV / ventes<br><input name="sales" type="number" min="0" value="{{ kpi.sales }}"></label>
+        <button class="btn" type="submit">💾 Enregistrer</button>
+      </form>
+
+      <div class="actions" style="margin-top:10px;">
+        <form method="post" action="/today/reset">
+          <button class="btn" type="submit" onclick="return confirm('Reset actions + KPI ?')">🔄 Reset</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyText(id){
+      const el = document.getElementById(id);
+      const txt = el ? el.innerText : "";
+      navigator.clipboard.writeText(txt);
+      alert("Script copié ✅");
+    }
+  </script>
+</body>
+</html>

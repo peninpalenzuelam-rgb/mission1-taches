@@ -1,14 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, abort
 from pathlib import Path
+from flask import jsonify
 import json
 import shutil
 from datetime import datetime
 
 app = Flask(__name__)
+print("✅ LOADED:", __file__)
 DATA_FILE = Path("tasks.json")
 
 BACKUP_DIR = Path("backups")
 CONFIG_FILE = Path("config.json")
+
+TODAY_FILE = Path("today.json")
+
 
 DEFAULT_CONFIG = {
     "keep_backups": 30,
@@ -247,8 +252,9 @@ def restore_backup(name):
 @app.get("/settings")
 def settings():
     cfg = load_config()
-    return render_template("settings.html", cfg=cfg)
-
+    saved = request.args.get("saved") == "1"
+    return render_template("settings.html", cfg=cfg, saved=saved)
+    print("saved=", saved)
 
 @app.post("/settings")
 def settings_save():
@@ -265,32 +271,65 @@ def settings_save():
         cfg["port"] = max(1024, min(port, 65535))
 
     save_config(cfg)
-    return redirect(url_for("settings"))
+    return redirect(url_for("settings", saved=1))
 
 
-@app.get("/settings2")
-def settings2():
-    cfg = load_config()
-    return render_template("settings.html", cfg=cfg)
 
 
-@app.post("/settings2")
-def settings2_save():
-    cfg = load_config()
+def load_today():
+    if not TODAY_FILE.exists():
+        return {"day_number": 1, "actions": [], "kpi_today": {"leads": 0, "sales": 0}}
+    return json.loads(TODAY_FILE.read_text(encoding="utf-8"))
 
-    keep_raw = (request.form.get("keep_backups") or "").strip()
-    port_raw = (request.form.get("port") or "").strip()
 
-    if keep_raw.isdigit():
-        keep = int(keep_raw)
-        cfg["keep_backups"] = max(1, min(keep, 500))
+def save_today(data):
+    TODAY_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    if port_raw.isdigit():
-        port = int(port_raw)
-        cfg["port"] = max(1024, min(port, 65535))
 
-    save_config(cfg)
-    return redirect(url_for("settings"))
+@app.get("/today")
+def today_page():
+    data = load_today()
+    # Top 3 actions (au cas où il y en a plus tard)
+    actions = data.get("actions", [])[:3]
+    kpi = data.get("kpi_today", {"leads": 0, "sales": 0})
+    day_number = data.get("day_number", 1)
+    return render_template("today.html", actions=actions, kpi=kpi, day_number=day_number)
+
+
+@app.post("/today/action/<action_id>")
+def today_toggle_action(action_id):
+    data = load_today()
+    for a in data.get("actions", []):
+        if a.get("id") == action_id:
+            a["done"] = not bool(a.get("done"))
+            break
+    save_today(data)
+    return redirect(url_for("today_page"))
+
+
+@app.post("/today/kpi")
+def today_save_kpi():
+    data = load_today()
+    leads_raw = (request.form.get("leads") or "0").strip()
+    sales_raw = (request.form.get("sales") or "0").strip()
+
+    leads = int(leads_raw) if leads_raw.isdigit() else 0
+    sales = int(sales_raw) if sales_raw.isdigit() else 0
+
+    data["kpi_today"] = {"leads": leads, "sales": sales}
+    save_today(data)
+    return redirect(url_for("today_page"))
+
+
+@app.post("/today/reset")
+def today_reset():
+    data = load_today()
+    for a in data.get("actions", []):
+        a["done"] = False
+    data["kpi_today"] = {"leads": 0, "sales": 0}
+    save_today(data)
+    return redirect(url_for("today_page"))
+
 
 if __name__ == "__main__":
     cfg = load_config()

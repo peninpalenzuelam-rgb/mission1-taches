@@ -1,0 +1,33 @@
+{
+  "day_number": 1,
+  "actions": [
+    {
+      "id": "a1",
+      "title": "Demander 3 avis Google",
+      "duration_min": 8,
+      "kpi_tag": "Avis",
+      "script": "Bonjour 👋 Si vous avez 30 secondes, un avis Google m'aiderait énormément 🙏 Voici le lien : [LIEN]. Merci beaucoup !",
+      "done": false
+    },
+    {
+      "id": "a2",
+      "title": "Relancer 5 anciens clients (rebooking)",
+      "duration_min": 10,
+      "kpi_tag": "RDV",
+      "script": "Salut ! Ça fait un moment 😊 Vous voulez que je vous trouve un créneau cette semaine ? J’ai 2-3 dispos rapides.",
+      "done": false
+    },
+    {
+      "id": "a3",
+      "title": "Offre simple du jour (story Insta)",
+      "duration_min": 12,
+      "kpi_tag": "Panier",
+      "script": "Offre du jour : [OFFRE]. Réservez par DM maintenant ✅",
+      "done": false
+    }
+  ],
+  "kpi_today": {
+    "leads": 0,
+    "sales": 0
+  }
+}
