@@ -4,3 +4,4 @@ tasks.json
 .venv/
 backups/
 backups/
+config.json
