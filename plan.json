@@ -1,0 +1,209 @@
+{
+  "sector": "coiffeur",
+  "week": 1,
+  "days": [
+    {
+      "day": 1,
+      "items": [
+        {
+          "id": "d1_a",
+          "pillar": "Acquisition",
+          "title": "Demander 3 avis Google",
+          "duration_min": 8,
+          "script": "Bonjour 👋 Si vous avez 30 secondes, un avis Google m'aiderait énormément 🙏 Voici le lien : [LIEN]. Merci !",
+          "done": false
+        },
+        {
+          "id": "d1_c",
+          "pillar": "Conversion",
+          "title": "Relancer 5 anciens clients (rebooking)",
+          "duration_min": 10,
+          "script": "Salut ! Ça fait un moment 😊 Vous voulez un créneau cette semaine ? J’ai 2-3 dispos rapides.",
+          "done": false
+        },
+        {
+          "id": "d1_r",
+          "pillar": "Rétention",
+          "title": "Message post-prestation (fidélisation)",
+          "duration_min": 6,
+          "script": "Merci encore 😊 Si vous avez une question sur l’entretien de votre coupe, je suis là. À très vite !",
+          "done": false
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "items": [
+        {
+          "id": "d2_a",
+          "pillar": "Acquisition",
+          "title": "Publier un post Google Business",
+          "duration_min": 12,
+          "script": "Dispos cette semaine ✅ Réservez votre créneau : [téléphone/DM]. Offre du moment : [OFFRE].",
+          "done": false
+        },
+        {
+          "id": "d2_c",
+          "pillar": "Conversion",
+          "title": "Offre simple (pack) pour remplir l’agenda",
+          "duration_min": 10,
+          "script": "OFFRE SEMAINE : -10% sur [prestation] (ou soin offert) pour les créneaux [jours/heures]. Réservez par DM.",
+          "done": false
+        },
+        {
+          "id": "d2_r",
+          "pillar": "Rétention",
+          "title": "Script rebooking en fin de RDV",
+          "duration_min": 5,
+          "script": "On bloque déjà votre prochain RDV ? Comme ça vous êtes tranquille ✅",
+          "done": false
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "items": [
+        {
+          "id": "d3_a",
+          "pillar": "Acquisition",
+          "title": "DM local : 10 personnes (zone) + offre créneau",
+          "duration_min": 12,
+          "script": "Salut 👋 Je suis coiffeur(se) à [VILLE]. J’ai 2 créneaux dispos cette semaine (rapide). Tu veux que je te propose un horaire ?",
+          "done": false
+        },
+        {
+          "id": "d3_c",
+          "pillar": "Conversion",
+          "title": "Réponse rapide aux demandes : proposer 2 créneaux",
+          "duration_min": 8,
+          "script": "Top ✅ Je peux te proposer : 1) [jour/heure] ou 2) [jour/heure]. Tu préfères lequel ?",
+          "done": false
+        },
+        {
+          "id": "d3_r",
+          "pillar": "Rétention",
+          "title": "Relance no-show / annulés (3 personnes)",
+          "duration_min": 6,
+          "script": "Hello 😊 Si tu veux, j’ai un créneau de remplacement cette semaine. Je te le bloque ?",
+          "done": false
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "items": [
+        {
+          "id": "d4_a",
+          "pillar": "Acquisition",
+          "title": "Partenariat express (1 commerce voisin)",
+          "duration_min": 15,
+          "script": "Bonjour 👋 Je suis coiffeur(se) à côté. Partant pour un échange simple ? Je donne une petite offre à vos clients, et vous la même pour les miens. On teste 7 jours ?",
+          "done": false
+        },
+        {
+          "id": "d4_c",
+          "pillar": "Conversion",
+          "title": "Offre “créneaux creux” (message clair)",
+          "duration_min": 10,
+          "script": "DISPOS DERNIÈRE MINUTE ✅ Créneaux : [jour/heure] & [jour/heure]. Réservez en DM (réponse rapide).",
+          "done": false
+        },
+        {
+          "id": "d4_r",
+          "pillar": "Rétention",
+          "title": "Message rebooking aux clients satisfaits (5)",
+          "duration_min": 8,
+          "script": "Salut 😊 Tu veux que je te réserve un créneau dans 3–4 semaines ? Comme ça tu es tranquille.",
+          "done": false
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "items": [
+        {
+          "id": "d5_a",
+          "pillar": "Acquisition",
+          "title": "Story Insta “avant/après” + CTA RDV",
+          "duration_min": 12,
+          "script": "Avant / Après ✅ J’ai encore 2 créneaux cette semaine. Réserve par DM maintenant.",
+          "done": false
+        },
+        {
+          "id": "d5_c",
+          "pillar": "Conversion",
+          "title": "Script téléphone : convertir les demandes",
+          "duration_min": 10,
+          "script": "Super 👍 Je vous propose [créneau 1] ou [créneau 2]. Je vous bloque lequel ?",
+          "done": false
+        },
+        {
+          "id": "d5_r",
+          "pillar": "Rétention",
+          "title": "Upsell soft (soin/produit) sans forcer",
+          "duration_min": 6,
+          "script": "Pour garder ce résultat plus longtemps, je recommande [soin/produit]. Vous voulez que je vous montre ?",
+          "done": false
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "items": [
+        {
+          "id": "d6_a",
+          "pillar": "Acquisition",
+          "title": "Google : répondre à 3 avis + 1 post court",
+          "duration_min": 12,
+          "script": "Merci beaucoup pour votre avis ⭐️ Ça me motive ! Si vous repassez bientôt, je vous trouve un créneau ✅",
+          "done": false
+        },
+        {
+          "id": "d6_c",
+          "pillar": "Conversion",
+          "title": "Offre week-end / fin de semaine (remplissage)",
+          "duration_min": 10,
+          "script": "OFFRE WEEK-END ✅ [OFFRE]. Valable uniquement sur les créneaux restants. DM pour réserver.",
+          "done": false
+        },
+        {
+          "id": "d6_r",
+          "pillar": "Rétention",
+          "title": "Demande de rebooking (fin du cycle)",
+          "duration_min": 6,
+          "script": "Tu préfères qu’on bloque ton prochain RDV dans 3 semaines ou 4 semaines ?",
+          "done": false
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "items": [
+        {
+          "id": "d7_a",
+          "pillar": "Acquisition",
+          "title": "Bilan : publier “dispos semaine prochaine”",
+          "duration_min": 12,
+          "script": "Dispos semaine prochaine ✅ Créneaux : [jours/heures]. Réservez par DM/téléphone.",
+          "done": false
+        },
+        {
+          "id": "d7_c",
+          "pillar": "Conversion",
+          "title": "Liste d’attente (remplir les annulations)",
+          "duration_min": 10,
+          "script": "Je crée une liste d’attente ✅ Si un créneau se libère, je vous préviens en priorité. Vous voulez être ajouté(e) ?",
+          "done": false
+        },
+        {
+          "id": "d7_r",
+          "pillar": "Rétention",
+          "title": "Message “merci + recommandation”",
+          "duration_min": 8,
+          "script": "Merci pour votre confiance 🙏 Si vous connaissez quelqu’un qui cherche un bon coiffeur à [VILLE], envoyez-lui mon contact 😊",
+          "done": false
+        }
+      ]
+    }
+  ]
+}
