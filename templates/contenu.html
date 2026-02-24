@@ -68,10 +68,20 @@
           <div class="card">
             <div class="h">🖼️ Post</div>
             <div class="muted"><strong>Titre :</strong> {{ d["post"]["title"] }}</div>
-            <div class="box" style="margin-top:8px;">{{ d["post"]["caption"] }}</div>
+            <div class="box" id="post-{{ d["day"] }}">{{ d["post"]["caption"] }}</div>
+            <div style="margin-top:8px;">
+              <button class="btn" type="button" onclick="copyBox('post-{{ d["day"] }}')">📋 Copier Post</button>
+            </div>
             <div class="muted" style="margin-top:8px;"><strong>Visuel :</strong> {{ d["post"]["visual"] }}</div>
 
             <div class="h" style="margin-top:14px;">📲 Stories (3 slides)</div>
+            <div class="box" id="story-{{ d["day"] }}">
+            {% for s in d["story"]["slides"] %}{{ s }}
+            {% endfor %}
+            </div>
+            <div style="margin-top:8px;">
+              <button class="btn" type="button" onclick="copyBox('story-{{ d["day"] }}')">📋 Copier Stories</button>
+            </div>
             <ul>
               {% for s in d["story"]["slides"] %}
                 <li>{{ s }}</li>
