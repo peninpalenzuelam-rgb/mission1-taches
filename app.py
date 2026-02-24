@@ -7,6 +7,7 @@ from datetime import datetime
 app = Flask(__name__)
 DATA_FILE = Path("tasks.json")
 
+BACKUP_DIR = Path("backups")
 CONFIG_FILE = Path("config.json")
 
 DEFAULT_CONFIG = {
@@ -21,13 +22,17 @@ def load_tasks():
     return json.loads(DATA_FILE.read_text(encoding="utf-8"))
 
 
-BACKUP_DIR = Path("backups")
-CONFIG_FILE = Path("config.json")
-
-DEFAULT_CONFIG = {
-    "keep_backups": 30,
-    "port": 5001,
-}
+def load_config():
+    if not CONFIG_FILE.exists():
+        return DEFAULT_CONFIG.copy()
+    try:
+        data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+        cfg = DEFAULT_CONFIG.copy()
+        cfg.update({k: data[k] for k in DEFAULT_CONFIG.keys() if k in data})
+        return cfg
+    except Exception:
+        return DEFAULT_CONFIG.copy()
+    
 
 def save_config(cfg):
     CONFIG_FILE.write_text(json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -46,22 +51,20 @@ def backup_tasks_file():
         BACKUP_DIR.mkdir(exist_ok=True)
         stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
         shutil.copy2(DATA_FILE, BACKUP_DIR / f"tasks-{stamp}.json")
-
         cfg = load_config()
         prune_backups(int(cfg.get("keep_backups", 30)))
 
+
 def save_tasks(tasks):
     backup_tasks_file()
-    DATA_FILE.write_text(
-        json.dumps(tasks, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
+    DATA_FILE.write_text(json.dumps(tasks, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def ordered_items(tasks):
     return sorted(
         list(enumerate(tasks)),
-        key=lambda it: (it[1].get("done", False), it[1].get("pos", 10**9)))
+        key=lambda it: (it[1].get("done", False), it[1].get("pos", 10**9)),
+    )
 
 @app.get("/")
 def index():
@@ -254,10 +257,34 @@ def settings_save():
     keep_raw = (request.form.get("keep_backups") or "").strip()
     port_raw = (request.form.get("port") or "").strip()
 
-    # validations simples
     if keep_raw.isdigit():
         keep = int(keep_raw)
         cfg["keep_backups"] = max(1, min(keep, 500))  # limite raisonnable
+    if port_raw.isdigit():
+        port = int(port_raw)
+        cfg["port"] = max(1024, min(port, 65535))
+
+    save_config(cfg)
+    return redirect(url_for("settings"))
+
+
+@app.get("/settings2")
+def settings2():
+    cfg = load_config()
+    return render_template("settings.html", cfg=cfg)
+
+
+@app.post("/settings2")
+def settings2_save():
+    cfg = load_config()
+
+    keep_raw = (request.form.get("keep_backups") or "").strip()
+    port_raw = (request.form.get("port") or "").strip()
+
+    if keep_raw.isdigit():
+        keep = int(keep_raw)
+        cfg["keep_backups"] = max(1, min(keep, 500))
+
     if port_raw.isdigit():
         port = int(port_raw)
         cfg["port"] = max(1024, min(port, 65535))
