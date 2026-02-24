@@ -40,36 +40,28 @@
 
     <div class="cards">
       {% for a in actions %}
-        <div class="card {{ 'done' if a.done else '' }}">
+        <div class="card {{ 'done' if a["done"] else '' }}">
           <div class="row">
-            <form method="post" action="/today/action/{{ a.id }}">
-              <button class="btn" type="submit">{{ "✅" if a.done else "⬜️" }}</button>
+            <form method="post" action="/today/action/{{ a["id"]} }}">
+              <button class="btn" type="submit">{{ "✅" if a["done"] else "⬜️" }}</button>
             </form>
             <div style="flex:1;">
-              <div class="title">{{ a.title }}</div>
+              <div class="title">{{ a["title"] }}</div>
               <div class="meta">
-                <span class="badge">⏱️ {{ a.duration_min }} min</span>
-                <span class="badge">🎯 {{ a.kpi_tag }}</span>
+                <span class="badge">⏱️ {{ a["duration_min"] }} min</span>
+                <span class="badge">🎯 {{ a["pillar"] }}</span>
               </div>
             </div>
           </div>
 
-          <div class="script" id="script-{{ a.id }}">{{ a.script }}</div>
+          <div class="script" id="script-{{ a["id"] }}">{{ a["script"] }}</div>
 
           <div class="actions">
-            <button class="btn" type="button" onclick="copyText('script-{{ a.id }}')">📋 Copier script</button>
+            <button class="btn" type="button" onclick="copyText('script-{{ a["id"] }}')">📋 Copier script</button>
           </div>
         </div>
       {% endfor %}
     </div>
-
-    <div class="kpi">
-      <h2 style="margin:0 0 10px;">KPI (rapide)</h2>
-      <form method="post" action="/today/kpi" class="row" style="flex-wrap:wrap;">
-        <label>Leads<br><input name="leads" type="number" min="0" value="{{ kpi.leads }}"></label>
-        <label>RDV / ventes<br><input name="sales" type="number" min="0" value="{{ kpi.sales }}"></label>
-        <button class="btn" type="submit">💾 Enregistrer</button>
-      </form>
 
       <div class="actions" style="margin-top:10px;">
         <form method="post" action="/today/reset">
