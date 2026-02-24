@@ -3,88 +3,147 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tasks</title>
+  <title>Accueil</title>
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; margin: 24px; }
-    .wrap { max-width: 720px; margin: 0 auto; }
-    h1 { margin: 0 0 16px; }
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 18px; background:#fff; }
+    .wrap { max-width: 820px; margin: 0 auto; }
+    h1 { margin: 0; font-size: 26px; }
+    .sub { color:#666; margin-top: 6px; font-size: 13px; }
+
+    .btn { padding: 10px 12px; border: 1px solid #ddd; background: #fff; border-radius: 12px; cursor: pointer;
+           text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 8px; }
+    .btn:hover { background: #f6f6f6; }
+    .btn.small { padding: 8px 10px; border-radius: 10px; font-size: 13px; }
+
+    .topbar { display:flex; justify-content: space-between; align-items:flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .admin { display:flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .hero { border:1px solid #eee; border-radius: 16px; padding: 14px; margin-top: 10px; }
+    .primary { display:grid; gap: 10px; grid-template-columns: 1fr; margin-top: 10px; }
+    @media (min-width: 640px) { .primary { grid-template-columns: repeat(3, 1fr); } }
+
+    .cardlink { border:1px solid #eee; border-radius: 16px; padding: 14px; text-decoration:none; color:inherit; display:block; }
+    .cardlink:hover { background:#f8f8f8; }
+    .ctitle { font-weight: 800; font-size: 16px; }
+    .cdesc { color:#666; margin-top: 6px; font-size: 13px; line-height: 1.35; }
+
+    .stats { display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .pill { border:1px solid #eee; border-radius: 999px; padding: 6px 10px; font-size: 13px; color:#333; background:#fff; }
+
+    .section { margin-top: 14px; }
+    .section h2 { margin: 0 0 8px; font-size: 18px; }
+
     form { margin: 0; }
-    .row { display: flex; gap: 8px; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .bar { display:flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    input[type="text"] { flex: 1; min-width: 220px; padding: 10px; border: 1px solid #ddd; border-radius: 12px; }
+
+    .rows { margin-top: 10px; border-top: 1px solid #eee; }
+    .row { display:flex; gap: 8px; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
     .num { width: 36px; color: #666; }
     .title { flex: 1; }
     .done { text-decoration: line-through; color: #777; }
-    .btn { padding: 6px 10px; border: 1px solid #ddd; background: #fff; border-radius: 8px; cursor: pointer; }
-    .btn:hover { background: #f6f6f6; }
-    .add { display: flex; gap: 8px; margin: 16px 0 8px; }
-    input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 10px; }
-    .small { width: 220px; }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.btn { display: inline-flex; align-items: center; gap: 6px; }
+    .small { width: 220px; padding: 10px; border: 1px solid #ddd; border-radius: 12px; }
+
+    .muted { color:#666; font-size: 13px; }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <h1>Tasks</h1>
-      <div class="actions">
-        <a class="btn" href="/export.csv">⬇️ Export CSV</a>
-        <a class="btn" href="/backups">🗄️ Backups</a>
-        <a class="btn" href="/settings">⚙️ Paramètres</a>
-        <a class="btn" href="/today">✅ Aujourd’hui</a>
-     </div>
-   <form class="add" method="get" action="/">
-     <input type="text" name="q" placeholder="Rechercher…" value="{{ q or '' }}" />
-     <button class="btn" type="submit">Rechercher</button>
-     <a class="btn" href="/">Réinitialiser</a>
-  </form>
-      <p>
-        <strong>Total:</strong> {{ total }} —
-        <strong>Faits:</strong> {{ done }} —
-        <strong>À faire:</strong> {{ todo }}
-      </p>
-      
+
+    <div class="topbar">
+      <div>
+        <h1>Tableau de bord</h1>
+        <div class="sub">Aujourd’hui → Programme → Suivi. Simple, clair, exécutable.</div>
+      </div>
+
+      <div class="admin">
+        <a class="btn small" href="/export.csv">⬇️ Export</a>
+        <a class="btn small" href="/backups">🗄️ Backups</a>
+        <a class="btn small" href="/settings">⚙️ Paramètres</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="primary">
+        <a class="cardlink" href="/today">
+          <div class="ctitle">✅ Aujourd’hui</div>
+          <div class="cdesc">3 actions max + scripts prêts. Objectif : exécuter en 10–30 min.</div>
+        </a>
+
+        <a class="cardlink" href="/plan">
+          <div class="ctitle">📅 Programme 7 jours</div>
+          <div class="cdesc">La feuille de route de la semaine : acquisition, conversion, fidélisation.</div>
+        </a>
+
+        <a class="cardlink" href="/suivi">
+          <div class="ctitle">📈 Suivi</div>
+          <div class="cdesc">Vos chiffres de la semaine, en mots simples. Ajustement rapide.</div>
+        </a>
+      </div>
+
+      <div class="stats">
+        <span class="pill"><strong>Total</strong> : {{ total }}</span>
+        <span class="pill"><strong>Faits</strong> : {{ done }}</span>
+        <span class="pill"><strong>À faire</strong> : {{ todo }}</span>
+        {% if q %}
+          <span class="pill"><strong>Résultats</strong> : {{ filtered_total }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Tâches</h2>
+
+      <form class="bar" method="get" action="/">
+        <input type="text" name="q" placeholder="Rechercher une tâche…" value="{{ q or '' }}" />
+        <button class="btn" type="submit">Rechercher</button>
+        <a class="btn" href="/">Réinitialiser</a>
+      </form>
+
       {% if q %}
-        <p>
-         <strong>Résultats:</strong> {{ filtered_total }} —
-         <strong>Faits:</strong> {{ filtered_done }} —
-         <strong>À faire:</strong> {{ filtered_todo }}
-        </p>
-      {% endif %}
-    <form class="add" method="post" action="/add">
-      <input type="text" name="title" placeholder="Nouvelle tâche…" required />
-      <button class="btn" type="submit">Ajouter</button>
-    </form>
-    {% if items|length == 0 %}
-    {% else %}
-      {% for idx, task in items %}
-        {% set display_id = loop.index %}
-        <div class="row">
-          <div class="num">{{ display_id }}.</div>
-
-          <form method="post" action="/up/{{ display_id }}">
-            <button class="btn" type="submit">⬆️</button>
-          </form>
-
-          <form method="post" action="/down/{{ display_id }}">
-            <button class="btn" type="submit">⬇️</button>
-          </form>
-          
-          <form method="post" action="/toggle/{{ display_id }}">
-            <button class="btn" type="submit">{{ "✅" if task.done else "⬜️" }}</button>
-          </form>
-
-          <div class="title {{ 'done' if task.done else '' }}">{{ task.title }}</div>
-
-          <form method="post" action="/edit/{{ display_id }}">
-            <input class="small" type="text" name="title" placeholder="Éditer…" />
-            <button class="btn" type="submit">✏️</button>
-          </form>
-
-          <form method="post" action="/delete/{{ display_id }}" onsubmit="return confirm('Supprimer ?');">
-            <button class="btn" type="submit">🗑️</button>
-          </form>
+        <div class="muted" style="margin-top:8px;">
+          Filtre actif : <strong>{{ q }}</strong> — Résultats: {{ filtered_total }} (Faits: {{ filtered_done }}, À faire: {{ filtered_todo }})
         </div>
-      {% endfor %}
-  {% endif %}
+      {% endif %}
+
+      <form class="bar" method="post" action="/add" style="margin-top:10px;">
+        <input type="text" name="title" placeholder="Nouvelle tâche…" required />
+        <button class="btn" type="submit">Ajouter</button>
+      </form>
+
+      {% if items|length == 0 %}
+        <div class="muted" style="margin-top:10px;">Aucune tâche pour le moment.</div>
+      {% else %}
+        <div class="rows">
+          {% for idx, task in items %}
+            {% set display_id = loop.index %}
+            <div class="row">
+              <div class="num">{{ display_id }}.</div>
+
+              <form method="post" action="/up/{{ display_id }}"><button class="btn" type="submit">⬆️</button></form>
+              <form method="post" action="/down/{{ display_id }}"><button class="btn" type="submit">⬇️</button></form>
+
+              <form method="post" action="/toggle/{{ display_id }}">
+                <button class="btn" type="submit">{{ "✅" if task.done else "⬜️" }}</button>
+              </form>
+
+              <div class="title {{ 'done' if task.done else '' }}">{{ task.title }}</div>
+
+              <form method="post" action="/edit/{{ display_id }}">
+                <input class="small" type="text" name="title" placeholder="Éditer…" />
+                <button class="btn" type="submit">✏️</button>
+              </form>
+
+              <form method="post" action="/delete/{{ display_id }}" onsubmit="return confirm('Supprimer ?');">
+                <button class="btn" type="submit">🗑️</button>
+              </form>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
   </div>
 </body>
 </html>
