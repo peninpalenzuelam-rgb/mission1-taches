@@ -1,0 +1,153 @@
+{
+  "sector": "coiffeur",
+  "week": 1,
+  "days": [
+    {
+      "day": 1,
+      "reel": {
+        "hook": "Tu veux une coupe propre en 30 min ?",
+        "script": "Plan 1 (1s) : avant. Plan 2 (6s) : 2-3 coups de ciseaux (zoom). Plan 3 (6s) : dégradé (profil). Plan 4 (6s) : coiffage rapide. Plan 5 (5s) : après + sourire.\nTexte à dire: \"Dispos cette semaine ✅ DM 'RDV' et je te propose 2 créneaux.\"",
+        "shots": ["Avant (face)", "Ciseaux/tondeuse (zoom)", "Profil dégradé", "Coiffage rapide", "Après (face + profil)"],
+        "cta": "DM “RDV”"
+      },
+      "post": {
+        "title": "Dispos cette semaine ✅",
+        "caption": "J’ai 2–3 créneaux cette semaine. Vous préférez plutôt matin ou après-midi ?\n📩 Envoyez “RDV” en DM.",
+        "visual": "Photo après (fond clair) + texte: 'Dispos cette semaine'"
+      },
+      "story": {
+        "slides": [
+          "Slide 1: Avant/Après (texte: 'Dispos cette semaine ✅')",
+          "Slide 2: Créneaux (texte: '2 créneaux restants')",
+          "Slide 3: CTA (texte: 'DM “RDV” maintenant')"
+        ]
+      }
+    },
+    {
+      "day": 2,
+      "reel": {
+        "hook": "Le truc #1 pour une coupe qui tient plus longtemps",
+        "script": "Plan 1 (2s): après. Plan 2 (10s): vous expliquez 1 conseil entretien (simple). Plan 3 (8s): produit/soin (option). Plan 4 (5s): \"Je te bloque un créneau ?\"\nCTA: \"DM 'RDV'\"",
+        "shots": ["Après (propre)", "Vous parlez face cam (ou voix off)", "Produit/soin (option)", "Agenda / mains sur planning"],
+        "cta": "DM “RDV”"
+      },
+      "post": {
+        "title": "Conseil entretien (simple)",
+        "caption": "Astuce rapide pour garder la coupe plus nette : [1 conseil].\n✅ Si vous voulez un créneau, DM “RDV”.",
+        "visual": "Photo + texte court 'Astuce entretien'"
+      },
+      "story": {
+        "slides": [
+          "Slide 1: Astuce (texte: '1 astuce pour garder la coupe')",
+          "Slide 2: Résultat (texte: 'Ça change tout ✅')",
+          "Slide 3: CTA (texte: 'DM “RDV” si tu veux un créneau')"
+        ]
+      }
+    },
+    {
+      "day": 3,
+      "reel": {
+        "hook": "3 erreurs que je vois tout le temps (cheveux)",
+        "script": "Vous listez 3 erreurs rapides (1 phrase chacune) + 1 solution.\nFin: \"Si tu veux que je te conseille + coupe propre, DM 'RDV'\"",
+        "shots": ["Vous en face cam", "Zoom sur cheveux (exemple)", "Après (résultat)"],
+        "cta": "DM “RDV”"
+      },
+      "post": {
+        "title": "3 erreurs à éviter",
+        "caption": "1) …\n2) …\n3) …\n✅ Besoin d’un créneau ? DM “RDV”.",
+        "visual": "Carousel 3 slides (1 erreur/slide)"
+      },
+      "story": {
+        "slides": [
+          "Slide 1: 'Erreur #1' (texte court)",
+          "Slide 2: 'Erreur #2' (texte court)",
+          "Slide 3: 'Erreur #3 + DM RDV'"
+        ]
+      }
+    },
+    {
+      "day": 4,
+      "reel": {
+        "hook": "Transformation rapide (avant → après)",
+        "script": "Avant 1s → étapes 10s → après 5s.\nFin: \"Créneaux dispo: DM 'RDV'\"",
+        "shots": ["Avant", "Étape tondeuse", "Étape ciseaux", "Coiffage", "Après"],
+        "cta": "DM “RDV”"
+      },
+      "post": {
+        "title": "Avant / Après",
+        "caption": "Transformation du jour ✅\nDispos cette semaine : DM “RDV”.",
+        "visual": "Avant/Après côte à côte"
+      },
+      "story": {
+        "slides": [
+          "Slide 1: Avant",
+          "Slide 2: Après",
+          "Slide 3: CTA 'DM RDV + 2 créneaux'"
+        ]
+      }
+    },
+    {
+      "day": 5,
+      "reel": {
+        "hook": "Tu préfères quel style ? (A/B)",
+        "script": "Montrez 2 styles A/B.\nQuestion: \"A ou B ?\" + \"Si tu veux, je te propose un créneau: DM 'RDV'\"",
+        "shots": ["Style A", "Style B", "Vous posez la question"],
+        "cta": "DM “RDV”"
+      },
+      "post": {
+        "title": "A ou B ?",
+        "caption": "Votez : A ou B ?\n✅ Si vous voulez un créneau, DM “RDV”.",
+        "visual": "2 photos A/B"
+      },
+      "story": {
+        "slides": [
+          "Slide 1: A (sticker sondage)",
+          "Slide 2: B (sticker sondage)",
+          "Slide 3: CTA 'DM RDV'"
+        ]
+      }
+    },
+    {
+      "day": 6,
+      "reel": {
+        "hook": "Comment je rattrape une coupe ratée",
+        "script": "Expliquez 1 cas fréquent, montrez 2 plans travail, puis résultat.\nFin: \"Tu veux un créneau ? DM 'RDV'\"",
+        "shots": ["Problème (exemple)", "Travail (zoom)", "Résultat"],
+        "cta": "DM “RDV”"
+      },
+      "post": {
+        "title": "Rattrapage (cas fréquent)",
+        "caption": "Ça arrive souvent : [problème]. Voilà comment on rattrape proprement ✅\nDispos : DM “RDV”.",
+        "visual": "Photo résultat + texte 'Rattrapage'"
+      },
+      "story": {
+        "slides": [
+          "Slide 1: Problème",
+          "Slide 2: Solution",
+          "Slide 3: CTA DM RDV"
+        ]
+      }
+    },
+    {
+      "day": 7,
+      "reel": {
+        "hook": "Dispos semaine prochaine ✅",
+        "script": "Face cam 10–15s: annonce créneaux + comment réserver.\nFin: \"DM 'RDV' et je te propose 2 horaires\"",
+        "shots": ["Vous (face cam)", "Agenda/Planning", "Salon ambiance"],
+        "cta": "DM “RDV”"
+      },
+      "post": {
+        "title": "Créneaux semaine prochaine",
+        "caption": "Semaine prochaine : [jours/heures].\n📩 DM “RDV” pour que je vous propose 2 créneaux.",
+        "visual": "Visuel simple: 'Dispos semaine prochaine'"
+      },
+      "story": {
+        "slides": [
+          "Slide 1: 'Semaine prochaine ✅'",
+          "Slide 2: 'Créneaux: …'",
+          "Slide 3: 'DM RDV'"
+        ]
+      }
+    }
+  ]
+}

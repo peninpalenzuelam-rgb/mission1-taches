@@ -427,6 +427,19 @@ def suivi_save():
     save_suivi(suivi)
     return redirect(url_for("suivi_page"))
 
+
+CONTENU_FILE = Path("contenu.json")
+
+def load_contenu():
+    if not CONTENU_FILE.exists():
+        return {"sector": "coiffeur", "week": 1, "days": []}
+    return json.loads(CONTENU_FILE.read_text(encoding="utf-8"))
+
+@app.get("/contenu")
+def contenu_page():
+    data = load_contenu()
+    return render_template("contenu.html", contenu=data)
+
 if __name__ == "__main__":
     cfg = load_config()
     app.run(host="0.0.0.0", port=int(cfg.get("port", 5001)), debug=False)
