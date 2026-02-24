@@ -107,12 +107,23 @@ def index():
     except Exception:
         pass
 
+    current_day = None
+    try:
+        plan = load_plan()
+        for d in plan.get("days", []):
+            items = d.get("items", [])
+            if items and any(not it.get("done") for it in items):
+                current_day = d.get("day")
+                break
+    except Exception:
+        pass
+
     return render_template(
         "index.html",
         items=filtered_items, 
         q=q,
         total=total, done=done, todo=todo,
-        filtered_total=filtered_total, filtered_done=filtered_done, filtered_todo=filtered_todo, plan_progress=plan_progress)
+        filtered_total=filtered_total, filtered_done=filtered_done, filtered_todo=filtered_todo, plan_progress=plan_progress, current_day=current_day)
 
 
 @app.post("/add")

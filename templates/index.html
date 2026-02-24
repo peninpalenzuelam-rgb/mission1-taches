@@ -82,6 +82,15 @@
         </a>
       </div>
 
+      {% if current_day %}
+        <div class="muted" style="margin-top:10px;">
+         📌 Jour actuel : <strong>{{ current_day }}</strong>
+         <a class="btn small" href="/plan#day-{{ current_day }}">Aller au jour</a>
+        </div>
+      {% else %}
+        <div class="muted" style="margin-top:10px;">✅ Programme terminé (semaine complète).</div>
+      {% endif %}
+
       <div class="stats">
         <span class="pill"><strong>Total</strong> : {{ total }}</span>
         <span class="pill"><strong>Faits</strong> : {{ done }}</span>
