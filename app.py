@@ -336,7 +336,7 @@ def today_page():
                 break
 
     actions = (day_obj.get("items", []) if day_obj else [])[:3]
-    return render_template("today.html", actions=actions, day_number=current_day or 1)
+    return render_template("today.html", actions=actions, day_number=current_day or 1, current_day=current_day or 1)
 
 
 @app.post("/today/action/<action_id>")
