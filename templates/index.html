@@ -132,9 +132,6 @@
             <div class="row">
               <div class="num">{{ display_id }}.</div>
 
-              <form method="post" action="/up/{{ display_id }}"><button class="btn" type="submit">⬆️</button></form>
-              <form method="post" action="/down/{{ display_id }}"><button class="btn" type="submit">⬇️</button></form>
-
               <form method="post" action="/toggle/{{ display_id }}">
                 <button class="btn" type="submit">{{ "✅" if task.done else "⬜️" }}</button>
               </form>
@@ -148,6 +145,8 @@
 
               <form method="post" action="/delete/{{ display_id }}" onsubmit="return confirm('Supprimer ?');">
                 <button class="btn" type="submit">🗑️</button>
+                <form method="post" action="/up/{{ display_id }}"><button class="btn" type="submit">⬆️</button></form>
+              <form method="post" action="/down/{{ display_id }}"><button class="btn" type="submit">⬇️</button></form>
               </form>
             </div>
           {% endfor %}
