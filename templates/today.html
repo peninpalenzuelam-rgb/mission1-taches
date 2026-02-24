@@ -42,7 +42,7 @@
       {% for a in actions %}
         <div class="card {{ 'done' if a["done"] else '' }}">
           <div class="row">
-            <form method="post" action="/today/action/{{ a["id"]} }}">
+            <form method="post" action="/today/action/{{ a["id"] }}">
               <button class="btn" type="submit">{{ "✅" if a["done"] else "⬜️" }}</button>
             </form>
             <div style="flex:1;">
@@ -65,7 +65,7 @@
 
       <div class="actions" style="margin-top:10px;">
         <form method="post" action="/today/reset">
-          <button class="btn" type="submit" onclick="return confirm('Reset actions + KPI ?')">🔄 Reset</button>
+          <button class="btn" type="submit" onclick="return confirm('Reset actions')">🔄 Reset</button>
         </form>
       </div>
     </div>

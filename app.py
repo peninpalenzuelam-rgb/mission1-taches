@@ -10,8 +10,6 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-PLAN_FILE = Path("plan.json")
-
 DATA_FILE = Path("tasks.json")
 
 BACKUP_DIR = Path("backups")
@@ -252,7 +250,6 @@ def backups():
 
 
 def safe_backup_path(name: str) -> Path:
-    # Empêche les chemins du type ../../
     if "/" in name or "\\" in name:
         abort(400)
     if not (name.startswith("tasks-") and name.endswith(".json")):
@@ -270,10 +267,8 @@ def safe_backup_path(name: str) -> Path:
 def restore_backup(name):
     src = safe_backup_path(name)
 
-    # backup de l'état actuel avant d'écraser
     backup_tasks_file()
 
-    # restaure
     shutil.copy2(src, DATA_FILE)
 
     return redirect(url_for("index"))
@@ -303,12 +298,34 @@ def settings_save():
     return redirect(url_for("settings", saved=1))
 
 
+PLAN_FILE = Path("plan.json")
+
+def load_plan():
+    if not PLAN_FILE.exists():
+        return {"sector": "coiffeur", "week": 1, "days": []}
+    return json.loads(PLAN_FILE.read_text(encoding="utf-8"))
+
+def save_plan(plan):
+    PLAN_FILE.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+
+def get_current_day_from_plan(plan):
+    for d in plan.get("days", []):
+        items = d.get("items", [])
+        if items and any(not it.get("done") for it in items):
+            return d.get("day")
+    return None
+
+
 @app.get("/today")
 def today_page():
     plan = load_plan()
     current_day = get_current_day_from_plan(plan)
 
     day_obj = None
+
+    
     if current_day is None and plan.get("days"):
         day_obj = plan["days"][-1]
         current_day = day_obj.get("day")
@@ -325,20 +342,22 @@ def today_page():
 @app.post("/today/action/<action_id>")
 def today_toggle_action(action_id):
     plan = load_plan()
+
     for d in plan.get("days", []):
         for it in d.get("items", []):
             if it.get("id") == action_id:
                 it["done"] = not bool(it.get("done"))
                 save_plan(plan)
                 return redirect(url_for("today_page"))
-    return redirect(url_for("today_page"))
 
+    return redirect(url_for("today_page"))
 
 
 @app.post("/today/reset")
 def today_reset():
     plan = load_plan()
     current_day = get_current_day_from_plan(plan)
+
     if current_day is None and plan.get("days"):
         current_day = plan["days"][-1].get("day")
 
@@ -347,10 +366,9 @@ def today_reset():
             for it in d.get("items", []):
                 it["done"] = False
             break
+
     save_plan(plan)
     return redirect(url_for("today_page"))
-
-PLAN_FILE = Path("plan.json")
 
 
 @app.get("/plan")
