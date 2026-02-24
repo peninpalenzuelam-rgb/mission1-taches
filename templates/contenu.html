@@ -4,6 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contenu</title>
+  <script>
+  function copyBox(id){
+    const el = document.getElementById(id);
+    const txt = el ? el.innerText : "";
+    navigator.clipboard.writeText(txt);
+    alert("Copié ✅");
+  }
+</script>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; margin: 18px; }
     .wrap { max-width: 860px; margin: 0 auto; }
@@ -44,7 +52,10 @@
           <div class="card">
             <div class="h">🎬 Reel</div>
             <div class="muted"><strong>Hook :</strong> {{ d["reel"]["hook"] }}</div>
-            <div class="box" style="margin-top:8px;">{{ d["reel"]["script"] }}</div>
+            <div class="box" id="reel-{{ d["day"] }}">{{ d["reel"]["script"] }}</div>
+            <div style="margin-top:8px;">
+              <button class="btn" type="button" onclick="copyBox('reel-{{ d["day"] }}')">📋 Copier Reel</button>
+            </div>
             <div class="muted" style="margin-top:8px;"><strong>Plans (shot list) :</strong></div>
             <ul>
               {% for s in d["reel"]["shots"] %}
