@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, abort
 from pathlib import Path
 from flask import jsonify
 import json
+from flask import Response
+import csv
+import io
 import shutil
 from datetime import datetime
 
@@ -106,6 +109,7 @@ def index():
         plan_progress = {"done": done_actions, "total": total_actions, "pct": pct}
     except Exception:
         pass
+
 
     current_day = None
     try:
@@ -213,9 +217,7 @@ def move_down(display_id):
 
     return redirect(url_for("index"))
 
-from flask import Response
-import csv
-import io
+
 
 @app.get("/export.csv")
 def export_csv():
@@ -301,72 +303,55 @@ def settings_save():
     return redirect(url_for("settings", saved=1))
 
 
-
-
-def load_today():
-    if not TODAY_FILE.exists():
-        return {"day_number": 1, "actions": [], "kpi_today": {"leads": 0, "sales": 0}}
-    return json.loads(TODAY_FILE.read_text(encoding="utf-8"))
-
-
-def save_today(data):
-    TODAY_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-
-
 @app.get("/today")
 def today_page():
-    data = load_today()
-    # Top 3 actions (au cas où il y en a plus tard)
-    actions = data.get("actions", [])[:3]
-    kpi = data.get("kpi_today", {"leads": 0, "sales": 0})
-    day_number = data.get("day_number", 1)
-    return render_template("today.html", actions=actions, kpi=kpi, day_number=day_number)
+    plan = load_plan()
+    current_day = get_current_day_from_plan(plan)
+
+    day_obj = None
+    if current_day is None and plan.get("days"):
+        day_obj = plan["days"][-1]
+        current_day = day_obj.get("day")
+    else:
+        for d in plan.get("days", []):
+            if d.get("day") == current_day:
+                day_obj = d
+                break
+
+    actions = (day_obj.get("items", []) if day_obj else [])[:3]
+    return render_template("today.html", actions=actions, day_number=current_day or 1)
 
 
 @app.post("/today/action/<action_id>")
 def today_toggle_action(action_id):
-    data = load_today()
-    for a in data.get("actions", []):
-        if a.get("id") == action_id:
-            a["done"] = not bool(a.get("done"))
-            break
-    save_today(data)
+    plan = load_plan()
+    for d in plan.get("days", []):
+        for it in d.get("items", []):
+            if it.get("id") == action_id:
+                it["done"] = not bool(it.get("done"))
+                save_plan(plan)
+                return redirect(url_for("today_page"))
     return redirect(url_for("today_page"))
 
-
-@app.post("/today/kpi")
-def today_save_kpi():
-    data = load_today()
-    leads_raw = (request.form.get("leads") or "0").strip()
-    sales_raw = (request.form.get("sales") or "0").strip()
-
-    leads = int(leads_raw) if leads_raw.isdigit() else 0
-    sales = int(sales_raw) if sales_raw.isdigit() else 0
-
-    data["kpi_today"] = {"leads": leads, "sales": sales}
-    save_today(data)
-    return redirect(url_for("today_page"))
 
 
 @app.post("/today/reset")
 def today_reset():
-    data = load_today()
-    for a in data.get("actions", []):
-        a["done"] = False
-    data["kpi_today"] = {"leads": 0, "sales": 0}
-    save_today(data)
+    plan = load_plan()
+    current_day = get_current_day_from_plan(plan)
+    if current_day is None and plan.get("days"):
+        current_day = plan["days"][-1].get("day")
+
+    for d in plan.get("days", []):
+        if d.get("day") == current_day:
+            for it in d.get("items", []):
+                it["done"] = False
+            break
+    save_plan(plan)
     return redirect(url_for("today_page"))
 
 PLAN_FILE = Path("plan.json")
 
-
-def load_plan():
-    if not PLAN_FILE.exists():
-        return {"sector": "coiffeur", "week": 1, "days": []}
-    return json.loads(PLAN_FILE.read_text(encoding="utf-8"))
-
-def save_plan(plan):
-    PLAN_FILE.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
 
 @app.get("/plan")
 def plan_page():
