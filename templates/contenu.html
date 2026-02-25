@@ -4,10 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contenu</title>
-  <script>
+<script>
   function copyBox(id){
     const el = document.getElementById(id);
     const txt = el ? el.innerText : "";
+    navigator.clipboard.writeText(txt);
+    alert("Copié ✅");
+  }
+
+  function copyTextArea(id){
+    const ta = document.getElementById(id);
+    if (!ta) { alert("Zone introuvable"); return; }
+
+    const txt = ta.value;
     navigator.clipboard.writeText(txt);
     alert("Copié ✅");
   }
@@ -34,6 +43,7 @@
     <div class="top">
       <div>
         <h1 style="margin:0;">Contenu (7 jours)</h1>
+        <div class="muted">Réseau cible : <strong>{{ salon.get("reseau_1","Instagram") }}</strong></div>
         <div class="muted">Semaine {{ contenu["week"] }} — Secteur {{ contenu["sector"] }}</div>
       </div>
       <div class="top">
@@ -46,29 +56,43 @@
 
     {% for d in contenu["days"] %}
       <div class="day" id="content-day-{{ d["day"] }}">
-        <div class="box" id="all-{{ d["day"] }}" style="display:none;">
-        JOUR {{ d["day"] }}
+<textarea id="all-ta-{{ d["day"] }}" style="display:none;">JOUR {{ d["day"] }}
 
-        REEL
-        Hook: {{ d["reel"]["hook"] }}
-        Script:
-        {{ d["reel"]["script"] }}
+REEL
+Hook: {{ d["reel"]["hook"] }}
+{{ d["reel"]["script"] }}
 
-        POST
-        Titre: {{ d["post"]["title"] }}
-        Texte:
-        {{ d["post"]["caption"] }}
-        Visuel: {{ d["post"]["visual"] }}
+POST
+Titre: {{ d["post"]["title"] }}
+{{ d["post"]["caption"] }}
+Visuel: {{ d["post"]["visual"] }}
 
-        STORIES
-        {% for s in d["story"]["slides"] -%}
-        {{ loop.index }}. {{ s }}
-        {% if not loop.last %}{{ "\n" }}{% endif %}
-        {%- endfor %}
-        </div>
+STORIES
+{%- for s in d["story"]["slides"] -%}
+{{ loop.index }}. {{ s }}
+{%- if not loop.last %}{{ "\n" }}{%- endif -%}
+{%- endfor -%}
+</textarea>
+
+<textarea id="reel-ta-{{ d["day"] }}" style="display:none;">REEL — Jour {{ d["day"] }}
+Hook: {{ d["reel"]["hook"] }}
+{{ d["reel"]["script"] }}
+</textarea>
+
+<textarea id="post-ta-{{ d["day"] }}" style="display:none;">POST — Jour {{ d["day"] }}
+Titre: {{ d["post"]["title"] }}
+{{ d["post"]["caption"] }}
+Visuel: {{ d["post"]["visual"] }}
+</textarea>
+
+<textarea id="story-ta-{{ d["day"] }}" style="display:none;">STORIES — Jour {{ d["day"] }}
+{%- for s in d["story"]["slides"] -%}
+{{ loop.index }}. {{ s }}{%- if not loop.last %}{{ "\n" }}{%- endif -%}
+{%- endfor -%}
+</textarea>
+        
          <div style="font-weight:900;">Jour {{ d["day"] }}</div>
            <button class="btn" type="button" onclick="copyTextArea('all-ta-{{ d["day"] }}')">📋 Copier tout</button>
-        </div>
 
         <div class="grid">
           <div class="card">
@@ -98,14 +122,15 @@
 
             <div class="h" style="margin-top:14px;">📲 Stories (3 slides)</div>
             <div class="box" id="story-{{ d["day"] }}">
-            {% for s in d["story"]["slides"] -%}
-            {{ loop.index }}. {{ s }}
-            {% if not loop.last %}{{ "\n" }}{% endif %}
-            {%- endfor %}
+             {% for s in d["story"]["slides"] %}
+             {{ loop.index }}. {{ s }}
+             {% endfor %}
             </div>
+            
             <div style="margin-top:8px;">
                <button class="btn" type="button" onclick="copyTextArea('story-ta-{{ d["day"] }}')">📋 Copier Stories</button>
-          
+            </div>
+
             <ul>
               {% for s in d["story"]["slides"] %}
                 <li>{{ s }}</li>

@@ -336,6 +336,10 @@ def today_page():
                 break
 
     actions = (day_obj.get("items", []) if day_obj else [])[:3]
+    salon = load_salon()
+    for a in actions:
+        a["title"] = apply_salon(a.get("title",""), salon)
+        a["script"] = apply_salon(a.get("script",""), salon)
     return render_template("today.html", actions=actions, day_number=current_day or 1, current_day=current_day or 1)
 
 
@@ -374,6 +378,11 @@ def today_reset():
 @app.get("/plan")
 def plan_page():
     plan = load_plan()
+    salon = load_salon()
+    for d in plan.get("days", []):
+        for it in d.get("items", []):
+            it["title"] = apply_salon(it.get("title",""), salon)
+            it["script"] = apply_salon(it.get("script",""), salon)
     return render_template("plan.html", plan=plan)
 
 @app.post("/plan/toggle/<item_id>")
@@ -438,7 +447,53 @@ def load_contenu():
 @app.get("/contenu")
 def contenu_page():
     data = load_contenu()
-    return render_template("contenu.html", contenu=data)
+    salon = load_salon()
+    for d in data.get("days", []):
+        d["reel"]["hook"] = apply_salon(d["reel"].get("hook",""), salon)
+        d["reel"]["script"] = apply_salon(d["reel"].get("script",""), salon)
+        d["post"]["title"] = apply_salon(d["post"].get("title",""), salon)
+        d["post"]["caption"] = apply_salon(d["post"].get("caption",""), salon)
+        d["post"]["visual"] = apply_salon(d["post"].get("visual",""), salon)
+        d["story"]["slides"] = [apply_salon(s, salon) for s in d["story"].get("slides", [])]
+    return render_template("contenu.html", contenu=data, salon=salon)
+
+
+SALON_FILE = Path("salon.json")
+
+def load_salon():
+    if not SALON_FILE.exists():
+        return {"nom_salon": "Mon salon", "ville": "", "telephone": "", "lien_avis_google": "", "cta": "DM RDV"}
+    return json.loads(SALON_FILE.read_text(encoding="utf-8"))
+
+def save_salon(data):
+    SALON_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+def apply_salon(text, salon):
+    if not isinstance(text, str):
+        return text
+    return (text
+        .replace("[VILLE]", salon.get("ville","") or "[VILLE]")
+        .replace("[LIEN]", salon.get("lien_avis_google","") or "[LIEN]")
+        .replace("[téléphone/DM]", salon.get("telephone","") or (salon.get("cta","DM RDV")))
+        .replace("[OFFRE]", "Offre du moment")  # optionnel, on pourra le rendre configurable
+    )
+
+@app.get("/salon")
+def salon_page():
+    salon = load_salon()
+    saved = request.args.get("saved") == "1"
+    return render_template("salon.html", salon=salon, saved=saved)
+
+@app.post("/salon")
+def salon_save():
+    salon = load_salon()
+    salon["nom_salon"] = (request.form.get("nom_salon") or "").strip() or "Mon salon"
+    salon["ville"] = (request.form.get("ville") or "").strip()
+    salon["telephone"] = (request.form.get("telephone") or "").strip()
+    salon["lien_avis_google"] = (request.form.get("lien_avis_google") or "").strip()
+    salon["cta"] = (request.form.get("cta") or "").strip() or "DM RDV"
+    save_salon(salon)
+    return redirect(url_for("salon_page", saved=1))
 
 if __name__ == "__main__":
     cfg = load_config()

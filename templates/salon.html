@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mon salon</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 18px; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    .btn { padding: 10px 12px; border: 1px solid #ddd; background: #fff; border-radius: 12px; cursor: pointer; text-decoration:none; color:inherit; display:inline-flex; gap:8px; align-items:center; }
+    .btn:hover { background:#f6f6f6; }
+    .card { border:1px solid #eee; border-radius: 16px; padding: 12px; margin-top: 12px; }
+    label { display:block; margin-top: 10px; font-weight: 700; }
+    input { width:100%; padding: 10px; border:1px solid #ddd; border-radius: 12px; }
+    .muted { color:#666; font-size:13px; }
+    .ok { background:#f0fff4; border:1px solid #c6f6d5; padding:10px; border-radius:12px; margin-top:12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+      <div>
+        <h1 style="margin:0;">Mon salon</h1>
+        <div class="muted">Ces infos remplissent automatiquement les scripts et contenus.</div>
+      </div>
+      <a class="btn" href="/">← Accueil</a>
+    </div>
+
+    {% if saved %}
+      <div class="ok">✅ Enregistré</div>
+    {% endif %}
+
+    <div class="card">
+      <form method="post" action="/salon">
+        <label>Nom du salon</label>
+        <input name="nom_salon" value="{{ salon.get('nom_salon','') }}"/>
+
+        <label>Ville</label>
+        <input name="ville" placeholder="Ex: Braine-l’Alleud" value="{{ salon.get('ville','') }}"/>
+
+        <label>Téléphone</label>
+        <input name="telephone" placeholder="Ex: 04 ..." value="{{ salon.get('telephone','') }}"/>
+
+        <label>Lien avis Google</label>
+        <input name="lien_avis_google" placeholder="Lien direct pour laisser un avis" value="{{ salon.get('lien_avis_google','') }}"/>
+
+        <label>Réseau prioritaire #1</label>
+        <select name="reseau_1" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:12px;">
+          {% for r in ["Instagram","Google","Facebook","TikTok"] %}
+            <option value="{{ r }}" {% if salon.get("reseau_1")==r %}selected{% endif %}>{{ r }}</option>
+          {% endfor %}
+        </select>
+
+        <label>Réseau prioritaire #2</label>
+        <select name="reseau_2" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:12px;">
+          {% for r in ["Instagram","Google","Facebook","TikTok"] %}
+            <option value="{{ r }}" {% if salon.get("reseau_2")==r %}selected{% endif %}>{{ r }}</option>
+          {% endfor %}
+        </select>
+
+        <label>Réseau prioritaire #3</label>
+        <select name="reseau_3" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:12px;">
+           {% for r in ["Instagram","Google","Facebook","TikTok"] %}
+             <option value="{{ r }}" {% if salon.get("reseau_3")==r %}selected{% endif %}>{{ r }}</option>
+           {% endfor %}
+        </select>
+
+        <div class="muted" style="margin-top:8px;">
+  L’app privilégie le format de contenu adapté au réseau #1.
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <strong>Astuce</strong>
+      <div class="muted">Mettez le lien “avis Google” pour que les scripts “Demander un avis” soient prêts à envoyer.</div>
+    </div>
+  </div>
+</body>
+</html>
