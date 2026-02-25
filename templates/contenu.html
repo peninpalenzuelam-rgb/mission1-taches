@@ -43,7 +43,9 @@
     <div class="top">
       <div>
         <h1 style="margin:0;">Contenu (7 jours)</h1>
-        <div class="muted">Réseau cible : <strong>{{ salon.get("reseau_1","Instagram") }}</strong></div>
+        <div class="muted">Réseau cible : <strong>{{ reseau }}</strong></div>
+        {% set is_google = (reseau == "Google") %}
+        {% set is_fb = (reseau == "Facebook") %}
         <div class="muted">Semaine {{ contenu["week"] }} — Secteur {{ contenu["sector"] }}</div>
       </div>
       <div class="top">
@@ -96,12 +98,40 @@ Visuel: {{ d["post"]["visual"] }}
 
         <div class="grid">
           <div class="card">
-            <div class="h">🎬 Reel</div>
+            <div class="h">
+              {% if is_google %}📍 Post Google{% elif is_fb %}🟦 Post Facebook{% else %}🎬 Reel{% endif %}
+            </div>
             <div class="muted"><strong>Hook :</strong> {{ d["reel"]["hook"] }}</div>
-            <div class="box" id="reel-{{ d["day"] }}">{{ d["reel"]["script"] }}</div>
-            <div style="margin-top:8px;">
+            
+            {% if is_google %}
+              <div class="box">
+            Post Google (à copier-coller) :
+
+            {{ d["post"]["title"] }}
+            {{ "\n" }}
+            {{ d["post"]["caption"] }}
+
+            👉 Lien avis : {{ salon.get("lien_avis_google","[LIEN]") }}
+            👉 Réserver : {{ salon.get("telephone","") or salon.get("cta","DM RDV") }}
+             </div>
+
+            {% elif is_fb %}
+              <div class="box">
+            Post Facebook (à copier-coller) :
+
+            {{ d["post"]["caption"] }}
+
+            Astuce : publiez aussi dans 1 groupe local (ex : “Tu es de {{ salon.get("ville","[VILLE]") }} ?”)
+            👉 Réserver : {{ salon.get("telephone","") or salon.get("cta","DM RDV") }}
+              </div>
+
+            {% else %}
+              <div class="box" id="reel-{{ d["day"] }}">{{ d["reel"]["script"] }}</div>
+            {% endif %}
+
                <button class="btn" type="button" onclick="copyTextArea('reel-ta-{{ d["day"] }}')">📋 Copier Reel</button>
             </div>
+          {% if not is_google and not is_fb %}
             <div class="muted" style="margin-top:8px;"><strong>Plans (shot list) :</strong></div>
             <ul>
               {% for s in d["reel"]["shots"] %}
@@ -109,7 +139,16 @@ Visuel: {{ d["post"]["visual"] }}
               {% endfor %}
             </ul>
             <div class="muted" style="margin-top:8px;"><strong>CTA :</strong> {{ d["reel"]["cta"] }}</div>
-          </div>
+          {% else %}
+            <div class="muted" style="margin-top:8px;">
+              <strong>Conseil :</strong>
+              {% if is_google %}
+                publiez sur Google Business + demandez 1 avis via votre lien.
+              {% elif is_fb %}
+                publiez sur Facebook + 1 groupe local.
+              {% endif %}
+            </div>
+         {% endif %}
 
           <div class="card">
             <div class="h">🖼️ Post</div>
