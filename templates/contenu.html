@@ -67,7 +67,7 @@
         {%- endfor %}
         </div>
          <div style="font-weight:900;">Jour {{ d["day"] }}</div>
-           <button class="btn" type="button" onclick="copyBox('all-{{ d["day"] }}')">📋 Copier tout (Jour {{ d["day"] }})</button>
+           <button class="btn" type="button" onclick="copyTextArea('all-ta-{{ d["day"] }}')">📋 Copier tout</button>
         </div>
 
         <div class="grid">
@@ -76,7 +76,7 @@
             <div class="muted"><strong>Hook :</strong> {{ d["reel"]["hook"] }}</div>
             <div class="box" id="reel-{{ d["day"] }}">{{ d["reel"]["script"] }}</div>
             <div style="margin-top:8px;">
-              <button class="btn" type="button" onclick="copyBox('reel-{{ d["day"] }}')">📋 Copier Reel</button>
+               <button class="btn" type="button" onclick="copyTextArea('reel-ta-{{ d["day"] }}')">📋 Copier Reel</button>
             </div>
             <div class="muted" style="margin-top:8px;"><strong>Plans (shot list) :</strong></div>
             <ul>
@@ -92,7 +92,7 @@
             <div class="muted"><strong>Titre :</strong> {{ d["post"]["title"] }}</div>
             <div class="box" id="post-{{ d["day"] }}">{{ d["post"]["caption"] }}</div>
             <div style="margin-top:8px;">
-              <button class="btn" type="button" onclick="copyBox('post-{{ d["day"] }}')">📋 Copier Post</button>
+               <button class="btn" type="button" onclick="copyTextArea('post-ta-{{ d["day"] }}')">📋 Copier Post</button>
             </div>
             <div class="muted" style="margin-top:8px;"><strong>Visuel :</strong> {{ d["post"]["visual"] }}</div>
 
@@ -104,7 +104,7 @@
             {%- endfor %}
             </div>
             <div style="margin-top:8px;">
-              <button class="btn" type="button" onclick="copyBox('story-{{ d["day"] }}')">📋 Copier Stories</button>
+               <button class="btn" type="button" onclick="copyTextArea('story-ta-{{ d["day"] }}')">📋 Copier Stories</button>
           
             <ul>
               {% for s in d["story"]["slides"] %}
