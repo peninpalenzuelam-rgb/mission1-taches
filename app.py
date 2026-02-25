@@ -455,8 +455,8 @@ def contenu_page():
         d["post"]["caption"] = apply_salon(d["post"].get("caption",""), salon)
         d["post"]["visual"] = apply_salon(d["post"].get("visual",""), salon)
         d["story"]["slides"] = [apply_salon(s, salon) for s in d["story"].get("slides", [])]
-    return render_template("contenu.html", contenu=data, salon=salon)
-
+        reseau = salon.get("reseau_1", "Instagram")
+        return render_template("contenu.html", contenu=data, salon=salon, reseau=reseau)
 
 SALON_FILE = Path("salon.json")
 
