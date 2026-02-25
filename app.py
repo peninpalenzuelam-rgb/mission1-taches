@@ -462,8 +462,16 @@ SALON_FILE = Path("salon.json")
 
 def load_salon():
     if not SALON_FILE.exists():
-        return {"nom_salon": "Mon salon", "ville": "", "telephone": "", "lien_avis_google": "", "cta": "DM RDV"}
-    return json.loads(SALON_FILE.read_text(encoding="utf-8"))
+        return {"nom_salon": "Mon salon", "ville": "", "telephone": "", "lien_avis_google": "", "cta": "DM RDV", "reseau_1": "Instagram",
+            "reseau_2": "Google",
+            "reseau_3": "Facebook"}
+    
+    salon = json.loads(SALON_FILE.read_text(encoding="utf-8"))
+    salon.setdefault("reseau_1", "Instagram")
+    salon.setdefault("reseau_2", "Google")
+    salon.setdefault("reseau_3", "Facebook")
+    return salon
+
 
 def save_salon(data):
     SALON_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -492,6 +500,11 @@ def salon_save():
     salon["telephone"] = (request.form.get("telephone") or "").strip()
     salon["lien_avis_google"] = (request.form.get("lien_avis_google") or "").strip()
     salon["cta"] = (request.form.get("cta") or "").strip() or "DM RDV"
+
+    salon["reseau_1"] = (request.form.get("reseau_1") or "").strip() or "Instagram"
+    salon["reseau_2"] = (request.form.get("reseau_2") or "").strip() or "Google"
+    salon["reseau_3"] = (request.form.get("reseau_3") or "").strip() or "Facebook"
+
     save_salon(salon)
     return redirect(url_for("salon_page", saved=1))
 
