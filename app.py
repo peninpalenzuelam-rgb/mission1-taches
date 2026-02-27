@@ -348,7 +348,7 @@ def today_page():
                 accroche = dd.get("reel", {}).get("hook", "")
                 break
         salon = load_salon()
-        accroche = apply_salon(hook, salon)
+        accroche = apply_salon(accroche, salon)
     except Exception:
         accroche = ""
     return render_template("today.html", actions=actions, day_number=current_day or 1, current_day=current_day or 1, accroche=accroche)
