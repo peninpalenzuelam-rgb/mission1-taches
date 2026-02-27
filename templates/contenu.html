@@ -36,12 +36,18 @@
     .box { white-space: pre-wrap; background:#fafafa; border:1px solid #eee; border-radius: 12px; padding: 10px; }
     .muted { color:#666; font-size: 13px; }
     .full { grid-column: 1 / -1; }
+    .card.full { grid-column: 1 / -1; }
+    .card.compact { padding: 10px; }
+    .grid.onecol { grid-template-columns: 1fr !important; }
+    .conseil { padding: 8px 10px; }
+    .conseil .h { margin: 0 0 6px; font-size: 14px; }
+    .conseil .muted { font-size: 12px; }
     ul { margin: 8px 0 0 18px; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="top">
+    <div class="top">  
       <div>
         <h1 style="margin:0;">Contenu (7 jours)</h1>
         <div class="muted">Réseau cible : <strong>{{ reseau }}</strong></div>
@@ -97,8 +103,7 @@ Visuel: {{ d["post"]["visual"] }}
          <div style="font-weight:900;">Jour {{ d["day"] }}</div>
            <button class="btn" type="button" onclick="copyTextArea('all-ta-{{ d["day"] }}')">📋 Copier tout</button>
 
-      <div class="grid">
-        <!-- CARD 1 : Adaptée au réseau -->
+        <div class="grid {% if is_google or is_fb %}onecol{% endif %}">
         <div class="card">
           <div class="h">
             {% if is_google %}📍 Post Google{% elif is_fb %}🟦 Post Facebook{% else %}🎬 Reel{% endif %}
@@ -152,13 +157,15 @@ Visuel: {{ d["post"]["visual"] }}
 
         <!-- CONSEIL en pleine largeur, ENTRE les 2 cards -->
         {% if is_google or is_fb %}
-          <div class="box full">
-            <strong>Conseil :</strong>
-            {% if is_google %}
-              Publiez sur Google Business + demandez 1 avis via votre lien.
-            {% else %}
-              Publiez sur Facebook + 1 groupe local.
-            {% endif %}
+         <div class="card full conseil">
+            <div class="h">💡 Conseil</div>
+            <div class="muted">
+              {% if is_google %}
+                Publiez sur Google Business + demandez 1 avis via votre lien.
+              {% else %}
+                Publiez sur Facebook + 1 groupe local.
+              {% endif %}
+            </div>
           </div>
         {% endif %}
 
