@@ -23,15 +23,15 @@
 </script>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; margin: 18px; }
-    .wrap { max-width: 860px; margin: 0 auto; }
+    .wrap { max-width: 720px; margin: 0 auto; }
     .top { display:flex; justify-content: space-between; align-items:center; gap: 10px; flex-wrap: wrap; }
     .btn { padding: 10px 12px; border: 1px solid #ddd; background: #fff; border-radius: 12px; cursor: pointer;
            text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 8px; }
     .btn:hover { background: #f6f6f6; }
-    .day { border:1px solid #eee; border-radius: 16px; padding: 12px; margin-top: 12px; }
+    .day { border:1px solid #eee; border-radius: 16px; padding: 10px; margin-top: 12px; }
     .grid { display:grid; gap: 10px; margin-top: 10px; }
     @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
-    .card { border:1px solid #eee; border-radius: 16px; padding: 12px; }
+    .card { border:1px solid #eee; border-radius: 16px; padding: 10px; }
     .h { font-weight: 800; margin-bottom: 8px; }
     .box { white-space: pre-wrap; background:#fafafa; border:1px solid #eee; border-radius: 12px; padding: 10px; }
     .muted { color:#666; font-size: 13px; }
@@ -103,7 +103,7 @@ Visuel: {{ d["post"]["visual"] }}
          <div style="font-weight:900;">Jour {{ d["day"] }}</div>
            <button class="btn" type="button" onclick="copyTextArea('all-ta-{{ d["day"] }}')">📋 Copier tout</button>
 
-        <div class="grid {% if is_google or is_fb %}onecol{% endif %}">
+        <div class="grid {% if is_google or is_fb %}onecol{% else %}two{% endif %}">
         <div class="card">
           <div class="h">
             {% if is_google %}📍 Post Google{% elif is_fb %}🟦 Post Facebook{% else %}🎬 Reel{% endif %}
@@ -157,8 +157,8 @@ Visuel: {{ d["post"]["visual"] }}
 
         <!-- CONSEIL en pleine largeur, ENTRE les 2 cards -->
         {% if is_google or is_fb %}
-         <div class="card full conseil">
-            <div class="h">💡 Conseil</div>
+         <div class="card full compact">
+            <div class="muted"><strong>💡 Conseil :</strong></div>
             <div class="muted">
               {% if is_google %}
                 Publiez sur Google Business + demandez 1 avis via votre lien.

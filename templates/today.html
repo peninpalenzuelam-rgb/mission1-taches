@@ -39,6 +39,17 @@
       </div>
     </div>
 
+   {% if hook %}
+     <div class="card" style="margin-top:12px;">
+       <div class="muted"><strong>Hook du jour</strong></div>
+       <div class="box" id="hook-box">{{ hook }}</div>
+       <div style="margin-top:8px;">
+         <button class="btn" type="button" onclick="copyText('hook-box')">📋 Copier Hook</button>
+         <a class="btn" href="/contenu#content-day-{{ current_day }}">🎬 Voir contenu du jour</a>
+       </div>
+     </div>
+   {% endif %}
+    
     <div class="cards">
       {% for a in actions %}
         <div class="card {{ 'done' if a["done"] else '' }}">
