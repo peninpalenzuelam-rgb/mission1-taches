@@ -35,6 +35,7 @@
     .h { font-weight: 800; margin-bottom: 8px; }
     .box { white-space: pre-wrap; background:#fafafa; border:1px solid #eee; border-radius: 12px; padding: 10px; }
     .muted { color:#666; font-size: 13px; }
+    .full { grid-column: 1 / -1; }
     ul { margin: 8px 0 0 18px; }
   </style>
 </head>
@@ -96,87 +97,101 @@ Visuel: {{ d["post"]["visual"] }}
          <div style="font-weight:900;">Jour {{ d["day"] }}</div>
            <button class="btn" type="button" onclick="copyTextArea('all-ta-{{ d["day"] }}')">📋 Copier tout</button>
 
-        <div class="grid">
-          <div class="card">
-            <div class="h">
-              {% if is_google %}📍 Post Google{% elif is_fb %}🟦 Post Facebook{% else %}🎬 Reel{% endif %}
-            </div>
-            <div class="muted"><strong>Hook :</strong> {{ d["reel"]["hook"] }}</div>
-            
-            {% if is_google %}
-              <div class="box">
-            Post Google (à copier-coller) :
+      <div class="grid">
+        <!-- CARD 1 : Adaptée au réseau -->
+        <div class="card">
+          <div class="h">
+            {% if is_google %}📍 Post Google{% elif is_fb %}🟦 Post Facebook{% else %}🎬 Reel{% endif %}
+          </div>
 
-            {{ d["post"]["title"] }}
-            {{ "\n" }}
-            {{ d["post"]["caption"] }}
+          <div class="muted"><strong>Hook :</strong> {{ d["reel"]["hook"] }}</div>
 
-            👉 Lien avis : {{ salon.get("lien_avis_google","[LIEN]") }}
-            👉 Réserver : {{ salon.get("telephone","") or salon.get("cta","DM RDV") }}
+          {% if is_google %}
+            <div class="box" style="margin-top:8px;">
+      Post Google (à copier-coller) :
+
+      {{ d["post"]["title"] }}
+      {{ "\n" }}
+      {{ d["post"]["caption"] }}
+
+      👉 Lien avis : {{ salon.get("lien_avis_google","[LIEN]") }}
+      👉 Réserver : {{ salon.get("telephone","") or salon.get("cta","DM RDV") }}
              </div>
+           {% elif is_fb %}
+             <div class="box" style="margin-top:8px;">
+       Post Facebook (à copier-coller) :
 
-            {% elif is_fb %}
-              <div class="box">
-            Post Facebook (à copier-coller) :
+       {{ d["post"]["caption"] }}
 
-            {{ d["post"]["caption"] }}
-
-            Astuce : publiez aussi dans 1 groupe local (ex : “Tu es de {{ salon.get("ville","[VILLE]") }} ?”)
-            👉 Réserver : {{ salon.get("telephone","") or salon.get("cta","DM RDV") }}
-              </div>
-
-            {% else %}
-              <div class="box" id="reel-{{ d["day"] }}">{{ d["reel"]["script"] }}</div>
-            {% endif %}
-
-               <button class="btn" type="button" onclick="copyTextArea('reel-ta-{{ d["day"] }}')">📋 Copier Reel</button>
+       Astuce : publiez aussi dans 1 groupe local (ex : “Tu es de {{ salon.get("ville","[VILLE]") }} ?”)
+       👉 Réserver : {{ salon.get("telephone","") or salon.get("cta","DM RDV") }}
             </div>
-          {% if not is_google and not is_fb %}
+         {% else %}
+           <div class="box" id="reel-{{ d["day"] }}" style="margin-top:8px;">{{ d["reel"]["script"] }}</div>
+
             <div class="muted" style="margin-top:8px;"><strong>Plans (shot list) :</strong></div>
             <ul>
               {% for s in d["reel"]["shots"] %}
-                <li>{{ s }}</li>
+                 <li>{{ s }}</li>
               {% endfor %}
             </ul>
+
             <div class="muted" style="margin-top:8px;"><strong>CTA :</strong> {{ d["reel"]["cta"] }}</div>
-          {% else %}
-            <div class="muted" style="margin-top:8px;">
-              <strong>Conseil :</strong>
-              {% if is_google %}
-                publiez sur Google Business + demandez 1 avis via votre lien.
-              {% elif is_fb %}
-                publiez sur Facebook + 1 groupe local.
-              {% endif %}
-            </div>
-         {% endif %}
+          {% endif %}
 
-          <div class="card">
-            <div class="h">🖼️ Post</div>
-            <div class="muted"><strong>Titre :</strong> {{ d["post"]["title"] }}</div>
-            <div class="box" id="post-{{ d["day"] }}">{{ d["post"]["caption"] }}</div>
-            <div style="margin-top:8px;">
-               <button class="btn" type="button" onclick="copyTextArea('post-ta-{{ d["day"] }}')">📋 Copier Post</button>
-            </div>
-            <div class="muted" style="margin-top:8px;"><strong>Visuel :</strong> {{ d["post"]["visual"] }}</div>
-
-            <div class="h" style="margin-top:14px;">📲 Stories (3 slides)</div>
-            <div class="box" id="story-{{ d["day"] }}">
-             {% for s in d["story"]["slides"] %}
-             {{ loop.index }}. {{ s }}
-             {% endfor %}
-            </div>
-            
-            <div style="margin-top:8px;">
-               <button class="btn" type="button" onclick="copyTextArea('story-ta-{{ d["day"] }}')">📋 Copier Stories</button>
-            </div>
-
-            <ul>
-              {% for s in d["story"]["slides"] %}
-                <li>{{ s }}</li>
-              {% endfor %}
-            </ul>
+          <div style="margin-top:10px;">
+            {% if is_google %}
+              <button class="btn" type="button" onclick="copyTextArea('post-ta-{{ d["day"] }}')">📋 Copier Post Google</button>
+            {% elif is_fb %}
+              <button class="btn" type="button" onclick="copyTextArea('post-ta-{{ d["day"] }}')">📋 Copier Post Facebook</button>
+            {% else %}
+              <button class="btn" type="button" onclick="copyTextArea('reel-ta-{{ d["day"] }}')">📋 Copier Reel</button>
+            {% endif %}
           </div>
-        </div>
+       </div>
+
+        <!-- CONSEIL en pleine largeur, ENTRE les 2 cards -->
+        {% if is_google or is_fb %}
+          <div class="box full">
+            <strong>Conseil :</strong>
+            {% if is_google %}
+              Publiez sur Google Business + demandez 1 avis via votre lien.
+            {% else %}
+              Publiez sur Facebook + 1 groupe local.
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <!-- CARD 2 : Post + Stories -->
+        <div class="card">
+          <div class="h">🖼️ Post</div>
+          <div class="muted"><strong>Titre :</strong> {{ d["post"]["title"] }}</div>
+          <div class="box" id="post-{{ d["day"] }}" style="margin-top:8px;">{{ d["post"]["caption"] }}</div>
+
+          <div style="margin-top:8px;">
+          <button class="btn" type="button" onclick="copyTextArea('post-ta-{{ d["day"] }}')">📋 Copier Post</button>
+          </div>
+
+          <div class="muted" style="margin-top:8px;"><strong>Visuel :</strong> {{ d["post"]["visual"] }}</div>
+
+          <div class="h" style="margin-top:14px;">📲 Stories (3 slides)</div>
+          <div class="box" id="story-{{ d["day"] }}" style="margin-top:8px;">
+      {% for s in d["story"]["slides"] %}
+      {{ loop.index }}. {{ s }}
+      {% endfor %}
+          </div>
+
+          <div style="margin-top:8px;">
+            <button class="btn" type="button" onclick="copyTextArea('story-ta-{{ d["day"] }}')">📋 Copier Stories</button>
+          </div>
+
+          <ul>
+            {% for s in d["story"]["slides"] %}
+              <li>{{ s }}</li>
+            {% endfor %}
+          </ul>
+         </div>
+       </div>
       </div>
     {% endfor %}
   </div>
