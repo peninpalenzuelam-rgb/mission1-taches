@@ -340,18 +340,18 @@ def today_page():
     for a in actions:
         a["title"] = apply_salon(a.get("title",""), salon)
         a["script"] = apply_salon(a.get("script",""), salon)
-    hook = ""
+    accroche = ""
     try:
         contenu = load_contenu()
         for dd in contenu.get("days", []):
             if dd.get("day") == (current_day or 1):
-                hook = dd.get("reel", {}).get("hook", "")
+                accroche = dd.get("reel", {}).get("hook", "")
                 break
         salon = load_salon()
-        hook = apply_salon(hook, salon)
+        accroche = apply_salon(hook, salon)
     except Exception:
-        hook = ""
-    return render_template("today.html", actions=actions, day_number=current_day or 1, current_day=current_day or 1, hook=hook)
+        accroche = ""
+    return render_template("today.html", actions=actions, day_number=current_day or 1, current_day=current_day or 1, accroche=accroche)
 
 
 @app.post("/today/action/<action_id>")
