@@ -341,27 +341,21 @@ def today_page():
         a["title"] = apply_salon(a.get("title",""), salon)
         a["script"] = apply_salon(a.get("script",""), salon)
     accroche = ""
+    post_texte = ""
+
     try:
         contenu = load_contenu()
         for dd in contenu.get("days", []):
             if dd.get("day") == (current_day or 1):
-                accroche = dd.get("reel", {}).get("hook", "")
-                break
+               accroche = dd.get("reel", {}).get("hook", "")   # clé JSON inchangée
+               post_texte = dd.get("post", {}).get("caption", "")
+               break
+
         salon = load_salon()
         accroche = apply_salon(accroche, salon)
+        post_texte = apply_salon(post_texte, salon)
     except Exception:
-        accroche = ""
-        post_texte = ""
-        try:
-            contenu = load_contenu()
-            for dd in contenu.get("days", []):
-                if dd.get("day") == (current_day or 1):
-                    post_texte = dd.get("post", {}).get("caption", "")
-                    break
-            salon = load_salon()
-            post_texte = apply_salon(post_texte, salon)
-        except Exception:
-            post_texte = ""
+        pass
     return render_template("today.html", actions=actions, day_number=current_day or 1, current_day=current_day or 1, accroche=accroche, post_texte=post_texte)
 
 
