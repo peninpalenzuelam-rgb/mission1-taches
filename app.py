@@ -351,7 +351,18 @@ def today_page():
         accroche = apply_salon(accroche, salon)
     except Exception:
         accroche = ""
-    return render_template("today.html", actions=actions, day_number=current_day or 1, current_day=current_day or 1, accroche=accroche)
+        post_texte = ""
+        try:
+            contenu = load_contenu()
+            for dd in contenu.get("days", []):
+                if dd.get("day") == (current_day or 1):
+                    post_texte = dd.get("post", {}).get("caption", "")
+                    break
+            salon = load_salon()
+            post_texte = apply_salon(post_texte, salon)
+        except Exception:
+            post_texte = ""
+    return render_template("today.html", actions=actions, day_number=current_day or 1, current_day=current_day or 1, accroche=accroche, post_texte=post_texte)
 
 
 @app.post("/today/action/<action_id>")
