@@ -45,7 +45,6 @@
        <div class="box" id="accroche-box">{{ accroche }}</div>
        <div style="margin-top:8px;">
          <button class="btn" type="button" onclick="copyText('accroche-box')">📋 Copier accroche</button>
-         <a class="btn" href="/contenu#content-day-{{ current_day }}">🎬 Voir contenu du jour</a>
        </div>
      </div>
    {% endif %}
@@ -82,6 +81,7 @@
       <div class="muted"><strong>Tout (copier-coller)</strong></div>
       <div style="margin-top:8px;">
         <button class="btn" type="button" onclick="copyTextArea('tout-box')">📋 Copier tout</button>
+        <a class="btn" href="/contenu#content-day-{{ current_day }}">🎬 Voir contenu du jour</a>
       </div>
      </div>
    {% endif %}
