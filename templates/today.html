@@ -50,17 +50,6 @@
      </div>
    {% endif %}
 
-   {% if tout_texte %}
-    <textarea id="tout-box" style="display:none;">{{ tout_texte }}</textarea>
-    <div class="card" style="margin-top:12px;">
-      <div class="muted"><strong>Tout (copier-coller)</strong></div>
-      <div style="margin-top:8px;">
-        <button class="btn" type="button" onclick="copyTextArea('tout-box')">📋 Copier tout</button>
-        <a class="btn" href="/contenu#content-day-{{ current_day }}">🎬 Voir contenu du jour</a>
-      </div>
-    </div>
-  {% endif %}
-
    {% if post_texte %}
      <div class="card" style="margin-top:12px;">
        <div class="muted"><strong>Post du jour</strong></div>
@@ -69,6 +58,34 @@
          <button class="btn" type="button" onclick="copyText('post-box')">📋 Copier Post</button>
          <a class="btn" href="/contenu#content-day-{{ current_day }}">🎬 Voir contenu du jour</a>
        </div>
+     </div>
+   {% endif %}
+
+   {% if stories and stories|length > 0 %}
+     <textarea id="stories-box" style="display:none;">{% for s in stories %}{{ loop.index }}. {{ s }}{% if not loop.last %}{{ "\n" }}{% endif %}{% endfor %}</textarea>
+
+     <div class="card" style="margin-top:12px;">
+       <div class="muted"><strong>Stories du jour</strong></div>
+       <div class="box">
+         {% for s in stories %}
+           {{ loop.index }}. {{ s }}{% if not loop.last %}<br>{% endif %}
+         {% endfor %}
+       </div>
+       <div style="margin-top:8px;">
+         <button class="btn" type="button" onclick="copyTextArea('stories-box')">📋 Copier Stories</button>
+         <a class="btn" href="/contenu#content-day-{{ current_day }}">🎬 Voir contenu du jour</a>
+       </div>
+     </div>
+   {% endif %}
+
+   {% if tout_texte %}
+     <textarea id="tout-box" style="display:none;">{{ tout_texte }}</textarea>
+     <div class="card" style="margin-top:12px;">
+      <div class="muted"><strong>Tout (copier-coller)</strong></div>
+      <div style="margin-top:8px;">
+        <button class="btn" type="button" onclick="copyTextArea('tout-box')">📋 Copier tout</button>
+        <a class="btn" href="/contenu#content-day-{{ current_day }}">🎬 Voir contenu du jour</a>
+      </div>
      </div>
    {% endif %}
     
