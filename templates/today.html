@@ -49,6 +49,28 @@
        </div>
      </div>
    {% endif %}
+
+   {% if tout_texte %}
+    <textarea id="tout-box" style="display:none;">{{ tout_texte }}</textarea>
+    <div class="card" style="margin-top:12px;">
+      <div class="muted"><strong>Tout (copier-coller)</strong></div>
+      <div style="margin-top:8px;">
+        <button class="btn" type="button" onclick="copyTextArea('tout-box')">📋 Copier tout</button>
+        <a class="btn" href="/contenu#content-day-{{ current_day }}">🎬 Voir contenu du jour</a>
+      </div>
+    </div>
+  {% endif %}
+
+   {% if post_texte %}
+     <div class="card" style="margin-top:12px;">
+       <div class="muted"><strong>Post du jour</strong></div>
+       <div class="box" id="post-box">{{ post_texte }}</div>
+       <div style="margin-top:8px;">
+         <button class="btn" type="button" onclick="copyText('post-box')">📋 Copier Post</button>
+         <a class="btn" href="/contenu#content-day-{{ current_day }}">🎬 Voir contenu du jour</a>
+       </div>
+     </div>
+   {% endif %}
     
     <div class="cards">
       {% for a in actions %}
@@ -90,6 +112,15 @@
       navigator.clipboard.writeText(txt);
       alert("Script copié ✅");
     }
+  </script>
+
+  <script>
+  function copyTextArea(id){
+    const ta = document.getElementById(id);
+    const txt = ta ? ta.value : "";
+    navigator.clipboard.writeText(txt);
+    alert("Copié ✅");
+  }
   </script>
 </body>
 </html>
